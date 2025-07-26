@@ -19,9 +19,9 @@ export default function LoginScreen() {
             <View style={styles.card}>
                 <Text style={styles.userTypeText}>Qual seu tipo de usuário:</Text>
 
-                <ActionButton  onPress={()=> router.push('/doador' as any)} title='Agricultor' />
-                <ActionButton  onPress={()=> router.push('/beneficiario' as any)} title='Beneficiário' />
-                  
+                <ActionButton onPress={() => router.push('/(tabs-doador)/principal' as any)} title='Agricultor' />
+                <ActionButton onPress={() => router.push('/(tabs-beneficiario)/principal' as any)} title='Beneficiário' />
+
 
             </View>
         </View>

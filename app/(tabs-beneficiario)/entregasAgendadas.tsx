@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Beneficiario() {
+export default function Entregas() {
   return (
     <View>
-      <Text>Beneficiario</Text>
+      <Text>EntregasAgendadas</Text>
     </View>
   )
 }

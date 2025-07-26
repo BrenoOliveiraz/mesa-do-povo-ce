@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Doador() {
+export default function Principal() {
   return (
     <View>
-      <Text>index</Text>
+      <Text>Principal</Text>
     </View>
   )
 }
