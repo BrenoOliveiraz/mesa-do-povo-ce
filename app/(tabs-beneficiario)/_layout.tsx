@@ -20,7 +20,7 @@ export default function Layout() {
           fontSize: 12,
           fontWeight: '500',
         },
-        
+
       }}
     >
       <Tabs.Screen
@@ -33,15 +33,6 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="entregasAgendadas"
-        options={{
-          title: 'Entregas Agendadas',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="calendar-check-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="candidaturas"
         options={{
           title: 'Candidaturas',
@@ -50,6 +41,16 @@ export default function Layout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="entregasAgendadas"
+        options={{
+          title: 'Entregas Agendadas',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="calendar-check-outline" color={color} size={size} />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }

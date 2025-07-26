@@ -14,7 +14,7 @@ export default function OfferCard({ title, validUntil, ...rest }: OfferCardProps
     <Pressable
       style={({ pressed }) => [
         styles.card,
-        { opacity: pressed ? 0.85 : 1 },
+        { opacity: pressed ? 0.75 : 1 },
       ]}
       {...rest}
     >

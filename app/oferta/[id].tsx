@@ -7,7 +7,7 @@ import { Pressable } from 'react-native';
 export default function OfertaDetalhe() {
   const { id } = useLocalSearchParams();
 
-  // Mock de dados (para substituir pelo Firestore futuramente)
+  
   const oferta = {
     id,
     titulo: 'Caixa de cenouras',

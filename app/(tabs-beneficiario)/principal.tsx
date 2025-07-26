@@ -8,7 +8,7 @@ const mockData = [
   { id: '1', title: 'Caixa de cenouras', validUntil: '25/11/2024' },
   { id: '2', title: 'Abacate', validUntil: '18/11/2024' },
   { id: '3', title: 'Caixas de creme de leite', validUntil: '21/11/2024' },
-  // pode adicionar mais dados aqui
+
 ];
 
 export default function Principal() {
@@ -35,6 +35,6 @@ export default function Principal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9', // fundo suave
+    backgroundColor: '#F9F9F9', 
   },
 });
