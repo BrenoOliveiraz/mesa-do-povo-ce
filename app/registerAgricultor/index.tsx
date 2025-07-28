@@ -1,8 +1,21 @@
 import { View, Text, Image, StyleSheet, Dimensions, StatusBar, Platform, TouchableOpacity } from 'react-native';
-import ActionButton from '../components/ActionButton';
+import { sessionsProducer } from '../utils/sessions'
 import { router } from 'expo-router';
+import InputField from '../components/InputField';
+import { useState } from 'react';
+import ActionButton from '../components/ActionButton';
 
-export default function LoginScreen() {
+export default function RegisterAgricultor() {
+
+    const [numSesion, setNumSesion] = useState(0)
+
+   
+
+    const nextSesion = () => {
+        setNumSesion(numSesion + 1)
+        console.log('SESSAO', numSesion)
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -12,17 +25,15 @@ export default function LoginScreen() {
                     resizeMode="contain"
                 />
                 <Text style={styles.welcomeText}>
-                    Bem vindo(a) ao App do Mesa do Povo CE
+                    <Text style={styles.userTypeText}>{sessionsProducer[0].title}</Text>
                 </Text>
             </View>
 
             <View style={styles.card}>
-                <Text style={styles.userTypeText}>Qual seu tipo de usuário:</Text>
 
-                <ActionButton onPress={() => router.push('/(tabs-doador)/principal' as any)} title='Agricultor' />
-                <ActionButton onPress={() => router.push('/(tabs-beneficiario)/principal' as any)} title='Beneficiário' />
+                {sessionsProducer[numSesion].textInput.map(text => <InputField label={text.label} placeholder={text.placeHolder} key={text.id} />)}
 
-
+            <ActionButton title='Avançar' onPress={nextSesion}/>
             </View>
         </View>
     );
@@ -52,7 +63,7 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: '#023047',
-        paddingVertical: 32,
+        paddingVertical: 50,
         paddingHorizontal: 24,
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,

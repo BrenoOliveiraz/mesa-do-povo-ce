@@ -7,7 +7,7 @@ interface HeaderProps {
   role?: string;
 }
 
-export default function Header({ userName, role = 'Beneficiário' }: HeaderProps) {
+export default function Header({ userName, role }: HeaderProps) {
   return (
     <View style={styles.container}>
       <Image source={require("../../assets/images/logo-mesa-ce.png")} style={styles.logo} />

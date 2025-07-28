@@ -12,7 +12,9 @@ export default function ActionButton({ onPress, title, icons, outline }: ActionB
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.button, outline && styles.outlineButton]}>
+      style={[styles.button, outline && styles.outlineButton]}
+      
+      >
       {icons}
       <Text style={[styles.buttonText, outline && styles.outlineButtonText]}>
         {title}
