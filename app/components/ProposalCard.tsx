@@ -9,6 +9,15 @@ interface OfferCardProps extends PressableProps {
   validUntil: string;
 }
 
+    const proposalItem = [
+     {id: '1', item: 'Banana', quantidade: '7', unidade: 'kg', validade: 'xx/xx/xxxx'},
+     {id: '2', item: 'Milho', quantidade: '2', unidade: 'kg', validade: 'xx/xx/xxxx'},
+     {id: '3', item: 'Feijão', quantidade: '10', unidade: 'kg', validade: 'xx/xx/xxxx'},
+     {id: '4', item: 'Arroz', quantidade: '9', unidade: 'kg', validade: 'xx/xx/xxxx'},
+     {id: '5', item: 'Trigo', quantidade: '6', unidade: 'kg', validade: 'xx/xx/xxxx'},
+
+    ]
+
 export default function OfferCard({ title, validUntil, ...rest }: OfferCardProps) {
   return (
     <Pressable
@@ -23,6 +32,18 @@ export default function OfferCard({ title, validUntil, ...rest }: OfferCardProps
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
+        <View style={styles.validity}>
+          <MaterialIcons name="calendar-today" size={14} color="#888" />
+          <Text style={styles.date}>Validade: {validUntil}</Text>
+        </View>
+        <View style={styles.validity}>
+          <MaterialIcons name="calendar-today" size={14} color="#888" />
+          <Text style={styles.date}>Validade: {validUntil}</Text>
+        </View>
+        <View style={styles.validity}>
+          <MaterialIcons name="calendar-today" size={14} color="#888" />
+          <Text style={styles.date}>Validade: {validUntil}</Text>
+        </View>
         <View style={styles.validity}>
           <MaterialIcons name="calendar-today" size={14} color="#888" />
           <Text style={styles.date}>Validade: {validUntil}</Text>

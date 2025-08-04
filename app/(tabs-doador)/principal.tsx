@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CardProduto from '../components/CardProduto';
+import CardProduto from '../components/ProductCard';
 import ActionButton from '../components/ActionButton';
 import { router } from 'expo-router';
 
