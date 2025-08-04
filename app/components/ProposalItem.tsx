@@ -1,44 +1,54 @@
-import { View, Text, StyleSheet } from 'react-native'
-const ProposalItem = (item, quantidade, unidade, validade) => {
+import { View, Text, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-
-
-    return (
-        <View style={styles.card}>
-            <View>
-                <Text>{item}</Text>
-            </View>
-            <View>
-                <Text>{quantidade}</Text>
-                <Text>{unidade}</Text>
-            </View>
-            <View>
-                <Text>
-                    {validade}
-                </Text>
-            </View>
-        </View>
-    )
+interface ProposalItemProps {
+  item: string;
+  quantidade: string;
+  unidade: string;
+  validade: string;
 }
-export default ProposalItem
 
+const ProposalItem = ({ item, quantidade, unidade, validade }: ProposalItemProps) => {
+  return (
+    <View style={styles.row}>
+      <View style={styles.left}>
+        <MaterialIcons name="shopping-cart" size={18} color="#888" />
+        <Text style={styles.itemText}>{item}</Text>
+      </View>
+      <Text style={styles.cell}>{quantidade} {unidade}</Text>
+      <Text style={[styles.cell, styles.validade]}>{validade}</Text>
+    </View>
+  );
+};
+
+export default ProposalItem;
 
 const styles = StyleSheet.create({
-    card: {
-        backgroundColor: '#fff',
-        padding: 16,
-        marginVertical: 6,
-        marginHorizontal: 16,
-        borderRadius: 12,
-        flexDirection: 'row',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
-    }, 
-    title: {
-        fontWeight: '600',
-        fontSize: 16,
-        marginBottom: 4,
-    },
-})
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  itemText: {
+    marginLeft: 6,
+    fontSize: 14,
+    color: '#333',
+  },
+  cell: {
+    flex: 1,
+    fontSize: 14,
+    color: '#333',
+    textAlign: 'center',
+  },
+  validade: {
+    color: '#FF5C5C',
+    fontWeight: '500',
+  },
+});

@@ -1,14 +1,15 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, FlatList, StyleSheet } from 'react-native';
+import React from 'react';
 import Header from '../components/Header';
-import OfferCard from '../components/ProposalCard';
+import ProposalCard from '../components/ProposalCard';
 import { router } from 'expo-router';
 
 const mockData = [
-  { id: '1', title: 'PROPOSTA 1', validUntil: '25/11/2024' },
-  { id: '2', title: 'PROPOSTA 2', validUntil: '18/11/2024' },
-  { id: '3', title: 'PROPOSTA 3', validUntil: '21/11/2024' },
-
+  { id: '1', title: 'PROPONENTE 1', CNP: '' },
+  { id: '2', title: 'PROPONENTE 2', CNP: '' },
+  { id: '3', title: 'PROPONENTE 3', CNP: '' },
+  { id: '4', title: 'PROPONENTE 4', CNP: '' },
+  { id: '5', title: 'PROPONENTE 5', CNP: '' },
 ];
 
 export default function Principal() {
@@ -19,11 +20,9 @@ export default function Principal() {
         data={mockData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <OfferCard
+          <ProposalCard
             title={item.title}
-            validUntil={item.validUntil}
             onPress={() => router.push(`/oferta/${item.id}`)}
-
           />
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -35,6 +34,6 @@ export default function Principal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9', 
+    backgroundColor: '#F4F6F8',
   },
 });
