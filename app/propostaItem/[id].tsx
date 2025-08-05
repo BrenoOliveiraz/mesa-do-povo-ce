@@ -21,6 +21,7 @@ export default function OfertaDetalhe() {
   };
 
   return (
+    
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.card}>

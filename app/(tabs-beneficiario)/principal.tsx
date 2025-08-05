@@ -22,7 +22,7 @@ export default function Principal() {
         renderItem={({ item }) => (
           <ProposalCard
             title={item.title}
-            onPress={() => router.push(`/oferta/${item.id}`)}
+            onPress={() => router.push(`/propostaItem/${item.id}`)}
           />
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
