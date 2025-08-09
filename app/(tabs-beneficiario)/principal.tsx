@@ -27,7 +27,7 @@ export default function Principal() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ProposalCard
-            title={item["Nome Proponente"]}
+            title={item.nomeProponente}
             subTitle={item.cnpjProponente}
             onPress={() => router.push(`/propostalPage/${item.id}`)}
           />

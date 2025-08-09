@@ -1708,3 +1708,49 @@ const dadosFormatados = dadosOriginais.reduce((acc, proponente) => {
 writeFileSync('./tpaf_formatado.json', JSON.stringify(dadosFormatados, null, 2), 'utf8');
 
 console.log('tpaf_formatado.json gerado com sucesso!');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//converter pra json e salvar no firestore
+// fs.writeFileSync(outputPath, JSON.stringify(firestoreData, null, 2));
+// console.log(`✅ JSON gerado com ${dadosProponentes.length} documentos em: ${outputPath}`);
+
+// for (let i = 1; i <= 345; i++) {
+//   const num = String(i).padStart(4, '0');
+//   const docId = `202502${num}`;
+//   firestoreData["__collections__"]["tpaf"][docId] = {
+//     "Num TPAF": `CE/2025/02/${num}`,
+//     "Nome Proponente": "ASSOCIAÇÃO MODELO",
+//     "CNPJ Proponente": "00.000.000/0000-00",
+//     "Produtos": [
+//       {
+//         "produto": "ALFACE",
+//         "quantidade": 100  // você pode ajustar esse valor conforme necessário
+//       }
+//     ]
+//   };
+// }
+
+// fs.writeFileSync(outputPath, JSON.stringify(firestoreData, null, 2));
+// console.log(`✅ JSON gerado com 345 documentos em: ${outputPath}`);
