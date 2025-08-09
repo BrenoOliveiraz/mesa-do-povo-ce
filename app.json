@@ -4,7 +4,6 @@
     "slug": "mesa-do-povo-ce",
     "version": "1.0.0",
     "orientation": "portrait",
-
     "scheme": "mesadopovoce",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,9 +11,7 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-
-      },
+      "adaptiveIcon": {},
       "edgeToEdgeEnabled": true
     },
     "web": {
