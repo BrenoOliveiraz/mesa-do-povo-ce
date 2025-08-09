@@ -26,7 +26,7 @@ export default function Layout() {
       <Tabs.Screen
         name="principal"
         options={{
-          title: 'Ofertas',
+          title: 'Propostas',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="food-apple-outline" color={color} size={size} />
           ),
@@ -44,7 +44,7 @@ export default function Layout() {
       <Tabs.Screen
         name="entregasAgendadas"
         options={{
-          title: 'Entregas Agendadas',
+          title: 'Entregas Realizadas',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="calendar-check-outline" color={color} size={size} />
           ),

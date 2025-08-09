@@ -4,19 +4,18 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface ProposalItemProps {
   item: string;
   quantidade: string;
-  unidade: string;
-  validade: string;
+
 }
 
-const ProposalItem = ({ item, quantidade, unidade, validade }: ProposalItemProps) => {
+const ProposalItem = ({ item, quantidade }: ProposalItemProps) => {
   return (
     <View style={styles.row}>
       <View style={styles.left}>
         <MaterialIcons name="shopping-cart" size={18} color="#888" />
         <Text style={styles.itemText}>{item}</Text>
       </View>
-      <Text style={styles.cell}>{quantidade} {unidade}</Text>
-      <Text style={[styles.cell, styles.validade]}>{validade}</Text>
+      <Text style={styles.cell}>{quantidade} </Text>
+      <Text style={[styles.cell, styles.validade]}></Text>
     </View>
   );
 };

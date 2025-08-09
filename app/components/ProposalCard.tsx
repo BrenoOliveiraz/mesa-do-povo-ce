@@ -1,49 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, PressableProps } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
-import ProposalItem from './ProposalItem';
-
-interface ProposalCardProps extends PressableProps {
-  title: string;
-}
-
-const proposalItem = [
-  { id: '1', item: 'Banana', quantidade: '7', unidade: 'kg', validade: '10/08/2025' },
-  { id: '2', item: 'Milho', quantidade: '2', unidade: 'kg', validade: '12/08/2025' },
-  { id: '3', item: 'Feijão', quantidade: '10', unidade: 'kg', validade: '15/08/2025' },
-  { id: '4', item: 'Arroz', quantidade: '5', unidade: 'kg', validade: '20/08/2025' },
-];
-
-export default function ProposalCard({ title, ...rest }: ProposalCardProps) {
-  const itemsToShow = proposalItem.slice(0, 3);
-  const hasMore = proposalItem.length > 3;
-
+export default function ProposalCard({ title, subTitle, onPress }) {
   return (
     <Pressable
+      onPress={onPress}
+      android_ripple={{ color: '#e0e0e0', borderless: false }}
       style={({ pressed }) => [
         styles.card,
-        { opacity: pressed ? 0.8 : 1 },
+        Platform.OS === 'ios' && pressed ? { opacity: 0.9 } : {}
       ]}
-      {...rest}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-
-        {itemsToShow.map((data) => (
-          <ProposalItem
-            key={data.id}
-            item={data.item}
-            quantidade={data.quantidade}
-            unidade={data.unidade}
-            validade={data.validade}
-          />
-        ))}
-
-        {hasMore && (
-          <Pressable onPress={rest.onPress} style={styles.button}>
-            <Text style={styles.buttonText}>Ver proposta completa</Text>
-          </Pressable>
-        )}
+        <View style={styles.textContainer}>
+          <Text style={styles.title} numberOfLines={2}>
+            {title}
+          </Text>
+          {subTitle ? (
+            <Text style={styles.subTitle}>{`TPAF: ${subTitle}`}</Text>
+          ) : null}
+          <Text style={styles.hint}>Toque para ver detalhes</Text>
+        </View>
+        <Feather name="chevron-right" size={22} color="#999" />
       </View>
     </Pressable>
   );
@@ -52,37 +31,43 @@ export default function ProposalCard({ title, ...rest }: ProposalCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
-    marginVertical: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginVertical: 6,
     marginHorizontal: 16,
-    borderRadius: 12,
-    flexDirection: 'row',
-    elevation: 4,
+    borderRadius: 10,
+    elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 90, 
+    maxHeight: 80, 
   },
   content: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
+  textContainer: {
+    flex: 1,
+    paddingRight: 8,
+  },
   title: {
-    fontWeight: '700',
-    fontSize: 18,
-    color: '#1A1A1A',
-    marginBottom: 8,
-  },
-  button: {
-    marginTop: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#007BFF',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#007BFF',
-    fontSize: 14,
     fontWeight: '600',
+    fontSize: 16,
+    color: '#1A1A1A',
+    marginBottom: 2,
+  },
+  subTitle: {
+    fontSize: 13,
+    color: '#666666',
+  },
+  hint: {
+    fontSize: 11,
+    color: '#999999',
+    marginTop: 4,
   },
 });

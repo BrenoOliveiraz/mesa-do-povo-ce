@@ -1,31 +1,44 @@
 import { View, FlatList, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import ProposalCard from '../components/ProposalCard';
 import { router } from 'expo-router';
-
-const mockData = [
-  { id: '1', title: 'PROPONENTE 1', CNP: '' },
-  { id: '2', title: 'PROPONENTE 2', CNP: '' },
-  { id: '3', title: 'PROPONENTE 3', CNP: '' },
-  { id: '4', title: 'PROPONENTE 4', CNP: '' },
-  { id: '5', title: 'PROPONENTE 5', CNP: '' },
-];
+import { getAllTpaf } from '../utils/fireBaseDados/getAlltpafs';
 
 export default function Principal() {
+  const [tpafs, setTpafs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTpafs = async () => {
+      const dados = await getAllTpaf();
+     setTpafs(dados.slice(0, 20));
+      setLoading(false);
+    };
+
+    fetchTpafs();
+  }, []);
+
   return (
     <View style={styles.container}>
       <FlatList
         ListHeaderComponent={<Header userName="André Monteiro" />}
-        data={mockData}
+        data={tpafs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ProposalCard
-            title={item.title}
-            onPress={() => router.push(`/propostaItem/${item.id}`)}
+            title={item["Nome Proponente"]}
+            subTitle={item.cnpjProponente}
+            onPress={() => router.push(`/propostalPage/${item.id}`)}
           />
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
+
+        // Props para performance
+        initialNumToRender={10}         
+        maxToRenderPerBatch={20}      
+        windowSize={5}                
+        removeClippedSubviews={true}   
       />
     </View>
   );
