@@ -1,129 +1,90 @@
-import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { FlatList, Text, View, StyleSheet } from 'react-native';
-import { db } from '../firebaseConfig';
+import { FlatList, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 
-
-
-
-
-const mockCandidaturas = [
-  {
-    id: '1',
-    titulo: 'Caixa de abacate 5',
-    status: 'NEGADO',
-    data: '29/10/2024 16:00 - 17:00',
-  },
-  {
-    id: '2',
-    titulo: 'Teste Abacaxi',
-    status: 'PENDENTE',
-    data: '30/10/2024 16:00 - 17:00',
-  },
-
-];
+import ProposalCard from '../components/ProposalCard';
+import Header from '../components/Header';
+import { getPropostasDoConsumidor } from '../utils/fireBaseDados/getUserTpaf';
 
 export default function MinhasCandidaturas() {
-  const [candidaturas, setCandidaturas] = useState([]);
+  const [propostas, setPropostas] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchCandidaturas() {
+    const fetchPropostas = async () => {
       try {
-        const subcollectionRef = collection(db, 'consumidores', '01976229000129', 'CE2025020001');
-        const querySnapshot = await getDocs(subcollectionRef);
-
-    
-        let todasCandidaturas = [];
-
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-              console.log(data)
-   
-          if (Array.isArray(data.produtosDoados)) {
-          
-            data.produtosDoados.forEach((produto, index) => {
-              todasCandidaturas.push({
-                id: `${doc.id}_${index}`,
-                ...produto
-              });
-            });
-          }
-        });
-
-        setCandidaturas(todasCandidaturas);
-      } catch (error) {
-        console.error("Erro ao buscar candidaturas:", error);
+        const cnpj = '01976229000129'; // Substitua pelo CNPJ real do consumidor (ou pegue dinamicamente)
+        const propostasDoUsuario = await getPropostasDoConsumidor(cnpj);
+        setPropostas(propostasDoUsuario);
+      } catch (err) {
+        console.error('Erro ao carregar propostas:', err);
+        setError('Erro ao carregar suas propostas.');
       } finally {
         setLoading(false);
       }
-    }
-    fetchCandidaturas();
+    };
 
+    fetchPropostas();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{item.titulo} (1x)</Text>
-        <View style={[
-          styles.statusTag,
-          { backgroundColor: item.status === 'NEGADO' ? '#E63946' : '#F1C40F' },
-        ]}>
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View>
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Header userName="André Monteiro" />
+        <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
       </View>
-      <Text style={styles.data}> {item.data}</Text>
-    </View>
-  );
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Header userName="André Monteiro" />
+        <Text style={styles.error}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
-    <FlatList
-      data={mockCandidaturas}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContainer}
-    />
+    <View style={styles.container}>
+      <Header userName="André Monteiro" />
+      <FlatList
+        data={propostas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ProposalCard
+            title={item.titulo || item.nomeProponente || 'Sem título'}
+            subTitle={item.status || item.cnpjProponente || 'Sem status'}
+            onPress={() => console.log('Abrir proposta', item.id)}
+          />
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>Você não está participando de nenhuma proposta.</Text>}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    padding: 16,
+  container: {
+    flex: 1,
+    backgroundColor: '#F4F6F8',
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  title: {
-    fontWeight: '600',
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
     fontSize: 16,
   },
-  data: {
-    color: '#555',
-    fontSize: 14,
-    marginTop: 4,
-  },
-  statusTag: {
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  statusText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
+  empty: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#666',
   },
 });
