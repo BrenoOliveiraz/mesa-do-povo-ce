@@ -12,7 +12,7 @@ export default function Principal() {
   useEffect(() => {
     const fetchTpafs = async () => {
       const dados = await getAllTpaf();
-     setTpafs(dados.slice(0, 20));
+      setTpafs(dados.slice(0, 20));
       setLoading(false);
     };
 
@@ -26,21 +26,29 @@ export default function Principal() {
         data={tpafs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
+
           <ProposalCard
             title={item.nomeProponente}
             subTitle={item.cnpjProponente}
-            onPress={() => router.push(`/propostalPage/${item.id}`)}
+            onPress={() => {
+         
+              router.push(`/propostalPage/${item.id}`);
+            }}
           />
+
         )}
+
         contentContainerStyle={{ paddingBottom: 20 }}
 
         // Props para performance
-        initialNumToRender={10}         
-        maxToRenderPerBatch={20}      
-        windowSize={5}                
-        removeClippedSubviews={true}   
+        initialNumToRender={10}
+        maxToRenderPerBatch={20}
+        windowSize={5}
+        removeClippedSubviews={true}
       />
+
     </View>
+
   );
 }
 

@@ -1,31 +1,51 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-
-const candidaturas = [
-  {
-    id: '1',
-    data: '29/10/2024 16:00 - 17:00',
-    titulo: 'Caixa de abacate 5 (1x)',
-    status: 'CONFIRMADA',
-    corStatus: '#4CAF50', 
-  },
-  {
-    id: '2',
-    data: '30/10/2024 16:00 - 17:00',
-    titulo: 'Teste Abacaxi (1x)',
-    status: 'PENDENTE',
-    corStatus: '#FFEB3B', 
-  },
-  {
-    id: '3',
-    data: '31/10/2024 20:00 - 22:00',
-    titulo: 'Teste Banana (1x)',
-    status: 'CONFIRMADA',
-    corStatus: '#4CAF50',
-  },
-];
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig'; // ajuste o caminho se necessário
 
 export default function MinhasCandidaturasScreen() {
-  const confirmadas = candidaturas.filter(item => item.status === 'CONFIRMADA');
+  const [entregas, setEntregas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEntregas = async () => {
+      try {
+        const entregasRef = collection(db, 'entregasRealizadas', '01976229000129', 'entregas');
+        const snapshot = await getDocs(entregasRef);
+
+        const lista = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            data: data.dataEntrega || 'Data não informada',
+            hora: data.horaEntrega || 'Hora não informada',
+            titulo: `${data.produto || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
+            status: 'CONFIRMADA', 
+            corStatus: '#4CAF50',
+          };
+        });
+
+        setEntregas(lista);
+      } catch (error) {
+        console.error('Erro ao buscar entregas:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEntregas();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Entregas Agendadas</Text>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  const confirmadas = entregas.filter(item => item.status === 'CONFIRMADA');
 
   return (
     <View style={styles.container}>
@@ -40,7 +60,7 @@ export default function MinhasCandidaturasScreen() {
           renderItem={({ item }) => (
             <View style={styles.cardWrapper}>
               <View style={styles.card}>
-                <Text style={styles.data}>{item.data}</Text>
+                <Text style={styles.data}>{item.data} {item.hora}</Text>
                 <View style={styles.cardContent}>
                   <Text style={styles.titulo}>{item.titulo}</Text>
                   <View style={[styles.statusBox, { backgroundColor: item.corStatus }]}>

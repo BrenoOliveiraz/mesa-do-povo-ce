@@ -13,7 +13,7 @@ export default function MinhasCandidaturas() {
   useEffect(() => {
     const fetchPropostas = async () => {
       try {
-        const cnpj = '01976229000129'; // Substitua pelo CNPJ real do consumidor (ou pegue dinamicamente)
+        const cnpj = '01976229000129'; 
         const propostasDoUsuario = await getPropostasDoConsumidor(cnpj);
         setPropostas(propostasDoUsuario);
       } catch (err) {

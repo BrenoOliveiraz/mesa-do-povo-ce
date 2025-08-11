@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import CardCarrossel from '../components/CardCarrossel';
 import HeaderCarrossel from '../components/HeaderCarrossel';
-import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
@@ -17,7 +16,6 @@ export default function ItemProposta() {
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Ref necessária para o onViewableItemsChanged não recriar a função a cada render
     const onViewRef = useRef(({ viewableItems }) => {
         const firstVisible = viewableItems.find(item => !item.item.isSpacer);
         if (firstVisible) {
@@ -35,7 +33,7 @@ export default function ItemProposta() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    const cnpj = '01976229000129';
+                    const cnpj = '04977699000103';
                     const codigoProjeto = data.numTpaf.replace(/\//g, '');
 
                     const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
@@ -76,7 +74,26 @@ export default function ItemProposta() {
     if (!proposta) {
         return (
             <View style={styles.center}>
-                <Text>Proposta não encontrada.</Text>
+                <Text style={styles.emptyTitle}>Proposta não encontrada.</Text>
+                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>Voltar</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    const produtosValidos = proposta.produtos.filter(p => !p.isSpacer);
+
+    if (produtosValidos.length === 0) {
+        return (
+            <View style={styles.center}>
+                <Text style={styles.emptyTitle}>🛈 Nenhum produto encontrado</Text>
+                <Text style={styles.emptyText}>
+                    Você ainda não possui produtos vinculados a essa proposta.
+                </Text>
+                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                    <Text style={styles.backButtonText}>Voltar</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -86,7 +103,6 @@ export default function ItemProposta() {
         if (!cardAtual || cardAtual.isSpacer) return;
 
         console.log("Card atual selecionado:", cardAtual);
-     
     };
 
     return (
@@ -157,5 +173,31 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 24,
+        backgroundColor: '#fff',
+    },
+    emptyTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+        color: '#444',
+    },
+    emptyText: {
+        fontSize: 15,
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    backButton: {
+        backgroundColor: '#ccc',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+    },
+    backButtonText: {
+        color: '#333',
+        fontWeight: 'bold',
+        fontSize: 14,
     },
 });

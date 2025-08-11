@@ -9,7 +9,7 @@ export const getPropostasDoConsumidor = async (cnpj) => {
   
 
   const relacoes = relacoesSnapshot.docs.map(doc => doc.data());
-    console.log(relacoes)
+   
   const propostas = [];
 
   for (const rel of relacoes) {
