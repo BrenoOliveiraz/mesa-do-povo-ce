@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 export default function ConfirmarEntrega() {
@@ -23,6 +23,8 @@ export default function ConfirmarEntrega() {
   const [observacao, setObservacao] = useState("");
   const [imagem, setImagem] = useState(null);
   const [produtoInfo, setProdutoInfo] = useState(null);
+
+  const usuarioId = "01976229000129";
 
   useEffect(() => {
     if (produto) {
@@ -55,7 +57,11 @@ export default function ConfirmarEntrega() {
     }
 
     try {
-      await addDoc(collection(db, "entregas"), {
+
+      const entregasRef = collection(db, "entregasRealizadas", usuarioId, "entregas");
+
+
+      await addDoc(entregasRef, {
         produtoId,
         produto: produtoInfo,
         dataEntrega,

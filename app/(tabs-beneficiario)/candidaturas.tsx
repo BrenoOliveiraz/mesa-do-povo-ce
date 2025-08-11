@@ -1,4 +1,11 @@
+import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
+import { db } from '../firebaseConfig';
+
+
+
+
 
 const mockCandidaturas = [
   {
@@ -13,15 +20,49 @@ const mockCandidaturas = [
     status: 'PENDENTE',
     data: '30/10/2024 16:00 - 17:00',
   },
-  {
-    id: '3',
-    titulo: 'Teste Banana',
-    status: 'PENDENTE',
-    data: '31/10/2024 20:00 - 22:00',
-  },
+
 ];
 
 export default function MinhasCandidaturas() {
+  const [candidaturas, setCandidaturas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    async function fetchCandidaturas() {
+      try {
+        const subcollectionRef = collection(db, 'consumidores', '01976229000129', 'CE2025020001');
+        const querySnapshot = await getDocs(subcollectionRef);
+
+    
+        let todasCandidaturas = [];
+
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+              console.log(data)
+   
+          if (Array.isArray(data.produtosDoados)) {
+          
+            data.produtosDoados.forEach((produto, index) => {
+              todasCandidaturas.push({
+                id: `${doc.id}_${index}`,
+                ...produto
+              });
+            });
+          }
+        });
+
+        setCandidaturas(todasCandidaturas);
+      } catch (error) {
+        console.error("Erro ao buscar candidaturas:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCandidaturas();
+
+  }, []);
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.header}>
