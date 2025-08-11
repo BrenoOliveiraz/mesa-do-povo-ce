@@ -29,13 +29,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Permitir que o aplicativo use a câmera para tirar fotos de entrega."
-        }
       ]
+      
     ],
     "experiments": {
       "typedRoutes": true

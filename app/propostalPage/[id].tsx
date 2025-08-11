@@ -35,7 +35,7 @@ export default function ItemProposta() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    const cnpj = '04977699000103';
+                    const cnpj = '01976229000129';
                     const codigoProjeto = data.numTpaf.replace(/\//g, '');
 
                     const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
@@ -86,7 +86,7 @@ export default function ItemProposta() {
         if (!cardAtual || cardAtual.isSpacer) return;
 
         console.log("Card atual selecionado:", cardAtual);
-        // Aqui você pode fazer algo com cardAtual (ex: salvar no Firebase)
+     
     };
 
     return (
