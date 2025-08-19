@@ -26,7 +26,7 @@ export default function Index() {
 
 
 
-        <ActionButton onPress={()=> router.replace('/homescreen')} title='Iniciar' />
+        <ActionButton onPress={()=> router.replace('/boot')} title='Iniciar' />
       </View>
 
 

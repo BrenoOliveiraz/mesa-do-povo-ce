@@ -44,7 +44,7 @@ export default function MinhasCandidaturas() {
 
   return (
     <View style={styles.container}>
-      <Header userName={userData?.nome || 'Usuário'} />
+      <Header userName={userData?.nome || "Usuário"} />
       <FlatList
         data={propostas}
         keyExtractor={(item) => item.id}
