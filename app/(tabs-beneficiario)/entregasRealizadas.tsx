@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig'; // ajuste o caminho se necessário
+import { db } from '../firebaseConfig'; 
 
 export default function MinhasCandidaturasScreen() {
   const [entregas, setEntregas] = useState([]);

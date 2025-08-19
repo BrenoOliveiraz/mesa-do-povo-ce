@@ -124,7 +124,7 @@ export default function ItemProposta() {
                 contentContainerStyle={{ paddingHorizontal: SPACER_WIDTH }}
                 renderItem={({ item }) => {
                     if (item.isSpacer) return <View style={{ width: SPACER_WIDTH }} />;
-                    return <CardCarrossel produto={item.produto} quantidade={item.quantidade} />;
+                    return <CardCarrossel produto={item.produto} quantidade={item.quantidade} descricao={item.descricao} validade={item.validade} peso={item.peso}/>;
                 }}
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
