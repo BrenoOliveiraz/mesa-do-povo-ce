@@ -5,16 +5,20 @@ import ProposalCard from '../components/ProposalCard';
 import Header from '../components/Header';
 import { getPropostasDoConsumidor } from '../utils/fireBaseDados/getUserTpaf';
 import { router } from 'expo-router';
+import { useUser } from '../contexts/UserContext';
 
 export default function MinhasCandidaturas() {
   const [propostas, setPropostas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { userData, loadingUser } = useUser();
+
+
   useEffect(() => {
     const fetchPropostas = async () => {
       try {
-        const cnpj = '01976229000129'; 
+        const cnpj = '01976229000129';
         const propostasDoUsuario = await getPropostasDoConsumidor(cnpj);
         setPropostas(propostasDoUsuario);
       } catch (err) {
@@ -28,27 +32,19 @@ export default function MinhasCandidaturas() {
     fetchPropostas();
   }, []);
 
-  if (loading) {
+
+  if (loadingUser || loading) {
     return (
       <View style={styles.container}>
-        <Header userName="André Monteiro" />
         <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
       </View>
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Header userName="André Monteiro" />
-        <Text style={styles.error}>{error}</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
-      <Header userName="André Monteiro" />
+      <Header userName={userData?.nome || 'Usuário'} />
       <FlatList
         data={propostas}
         keyExtractor={(item) => item.id}
@@ -57,7 +53,7 @@ export default function MinhasCandidaturas() {
             title={item.titulo || item.nomeProponente || 'Sem título'}
             subTitle={item.status || item.cnpjProponente || 'Sem status'}
             onPress={() => {
-         
+
               router.push(`/propostalPage/${item.id}`);
             }}
           />

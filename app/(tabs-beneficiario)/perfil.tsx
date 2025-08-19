@@ -20,8 +20,8 @@ export default function PerfilScreen() {
     <View style={styles.container}>
       <View style={styles.profileHeader}>
         <MaterialCommunityIcons name="account-circle" size={100} color="#023047" />
-        <Text style={styles.userName}></Text>
-        <Text style={styles.userEmail}>andre@email.com</Text>
+        <Text style={styles.userName}>{userData.nome}</Text>
+        <Text style={styles.userEmail}>{userData.email}</Text>
       </View>
 
       <View style={styles.optionsList}>
