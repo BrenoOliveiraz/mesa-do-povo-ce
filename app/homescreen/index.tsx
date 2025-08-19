@@ -20,8 +20,8 @@ export default function Homescreen() {
                 <Text style={styles.userTypeText}>Qual seu tipo de usuário:</Text>
 
                 {/* <ActionButton onPress={() => router.push('/(tabs-doador)/principal' as any)} title='Agricultor' /> */}
-                {/* <ActionButton onPress={() => router.push('/registerAgricultor' as any)} title='Agricultor' /> */}
-                <ActionButton onPress={() => router.push('/(tabs-beneficiario)/principal' as any)} title='Beneficiário' />
+                <ActionButton onPress={() => router.push('/login' as any)} title='Login' />
+               
 
 
             </View>

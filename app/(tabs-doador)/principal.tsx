@@ -15,20 +15,7 @@ type Produto = {
 
 export default function DoadorScreen() {
   const navigation = useNavigation();
-  const [produtos, setProdutos] = useState<Produto[]>([
-    {
-      id: '1',
-      nome: 'Banana prata',
-      validade: '28/07/2025',
-      quantidade: 10,
-    },
-    {
-      id: '2',
-      nome: 'Feijão verde',
-      validade: '01/08/2025',
-      quantidade: 25,
-    },
-  ]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
 
   const handleAddProduto = () => {
     navigation.navigate('AddProdutos' as never);

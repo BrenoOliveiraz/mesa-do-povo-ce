@@ -4,6 +4,7 @@ import { FlatList, Text, View, StyleSheet, ActivityIndicator } from 'react-nativ
 import ProposalCard from '../components/ProposalCard';
 import Header from '../components/Header';
 import { getPropostasDoConsumidor } from '../utils/fireBaseDados/getUserTpaf';
+import { router } from 'expo-router';
 
 export default function MinhasCandidaturas() {
   const [propostas, setPropostas] = useState([]);
@@ -55,7 +56,10 @@ export default function MinhasCandidaturas() {
           <ProposalCard
             title={item.titulo || item.nomeProponente || 'Sem título'}
             subTitle={item.status || item.cnpjProponente || 'Sem status'}
-            onPress={() => console.log('Abrir proposta', item.id)}
+            onPress={() => {
+         
+              router.push(`/propostalPage/${item.id}`);
+            }}
           />
         )}
         ListEmptyComponent={<Text style={styles.empty}>Você não está participando de nenhuma proposta.</Text>}

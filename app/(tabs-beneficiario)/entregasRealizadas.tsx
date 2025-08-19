@@ -39,7 +39,7 @@ export default function MinhasCandidaturasScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Entregas Agendadas</Text>
+        <Text style={styles.title}>Entregas realizadas</Text>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -49,7 +49,7 @@ export default function MinhasCandidaturasScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Entregas Agendadas</Text>
+      <Text style={styles.title}>Entregas realizadas</Text>
 
       {confirmadas.length === 0 ? (
         <Text style={styles.emptyText}>Nenhuma entrega confirmada até o momento.</Text>

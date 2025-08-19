@@ -16,7 +16,7 @@ export default function Index() {
 
 
         <Text style={styles.title}>
-          Otimize sua produtividade,  {'\n'}
+          Bem vindo!,  {'\n'}
 
           <Text style={styles.bold}>
             mergulhe no que  {'\n'}importa
