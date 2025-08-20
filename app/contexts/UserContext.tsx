@@ -20,10 +20,10 @@ export const UserProvider = ({ children }) => {
         const storedUser = await AsyncStorage.getItem('userData');
         if (storedUser) {
           setUserData(JSON.parse(storedUser));
-          console.log('🟨 Dados carregados do AsyncStorage:', storedUser);
+        
         }
       } catch (e) {
-        console.error('Erro ao carregar dados do usuário do AsyncStorage:', e);
+       
       } finally {
         setInitialLoadComplete(true);
       }
@@ -37,7 +37,7 @@ export const UserProvider = ({ children }) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setLoadingUser(true);
-      console.log('🟥 Firebase auth state mudou:', user);
+   
 
       if (!firstAuthCheckDone.current) {
        
@@ -51,14 +51,14 @@ export const UserProvider = ({ children }) => {
               const fullUserData = { uid: user.uid, ...docSnap.data() };
               setUserData(fullUserData);
               await AsyncStorage.setItem('userData', JSON.stringify(fullUserData));
-              console.log('✅ (1ª verificação) Dados atualizados e salvos no AsyncStorage.');
+       
             }
           } catch (error) {
             console.error('Erro ao buscar dados do Firestore:', error);
           }
         } else {
       
-          console.log('⚠️ (1ª verificação) Usuário null ignorado, mantendo dados no AsyncStorage.');
+       
         }
 
         setLoadingUser(false);
@@ -74,7 +74,7 @@ export const UserProvider = ({ children }) => {
             const fullUserData = { uid: user.uid, ...docSnap.data() };
             setUserData(fullUserData);
             await AsyncStorage.setItem('userData', JSON.stringify(fullUserData));
-            console.log('✅ Dados atualizados e salvos no AsyncStorage.');
+      
           }
         } catch (error) {
           console.error('Erro ao buscar dados do Firestore:', error);
@@ -82,7 +82,7 @@ export const UserProvider = ({ children }) => {
       } else {
         setUserData(null);
         await AsyncStorage.removeItem('userData');
-        console.log('🚫 Usuário deslogado. Dados removidos do AsyncStorage.');
+  
       }
 
       setLoadingUser(false);

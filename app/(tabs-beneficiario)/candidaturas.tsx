@@ -18,7 +18,7 @@ export default function MinhasCandidaturas() {
   useEffect(() => {
     const fetchPropostas = async () => {
       try {
-        const cnpj = '01976229000129';
+        const cnpj = '12223202000181';
         const propostasDoUsuario = await getPropostasDoConsumidor(cnpj);
         setPropostas(propostasDoUsuario);
       } catch (err) {
