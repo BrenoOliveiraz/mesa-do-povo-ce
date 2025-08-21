@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    Dimensions,
+    ActivityIndicator,
+    TouchableOpacity,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
@@ -7,14 +15,17 @@ import CardCarrossel from '../components/CardCarrossel';
 import HeaderCarrossel from '../components/HeaderCarrossel';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = width * 0.85;
+const CARD_WIDTH = width * 0.90;
 const SPACER_WIDTH = (width - CARD_WIDTH) / 2;
 
 export default function ItemProposta() {
-    const { id } = useLocalSearchParams();
+    const { id, cnpj } = useLocalSearchParams(); // Recebe o id e o CNPJ via params
     const [proposta, setProposta] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    console.log('🆔 ID da proposta:', id);
+    console.log('📛 CNPJ recebido:', cnpj);
 
     const onViewRef = useRef(({ viewableItems }) => {
         const firstVisible = viewableItems.find(item => !item.item.isSpacer);
@@ -29,46 +40,59 @@ export default function ItemProposta() {
         const fetchProposta = async () => {
             try {
                 const docRef = doc(db, 'tpaf', id);
+                console.log('📄 Referência do documento TPAF:', docRef.path);
+
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    const cnpj = '04977699000103';
+                    console.log('✅ Documento TPAF encontrado:', data);
+
                     const codigoProjeto = data.numTpaf.replace(/\//g, '');
+                    console.log('🧮 Código do projeto formatado:', codigoProjeto);
 
                     const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
+                    console.log('🔗 Referência de produtos:', produtosRef.path);
+
                     const produtosSnap = await getDoc(produtosRef);
 
                     let produtosDoados = [];
                     if (produtosSnap.exists()) {
                         produtosDoados = produtosSnap.data().produtosDoados || [];
+                        console.log('📦 Produtos doados encontrados:', produtosDoados);
+                    } else {
+                        console.warn('⚠️ Documento de produtos não encontrado.');
                     }
 
                     const produtosComEspacos = [
                         { isSpacer: true },
                         ...produtosDoados,
-                        { isSpacer: true }
+                        { isSpacer: true },
                     ];
 
                     setProposta({
                         ...data,
-                        produtos: produtosComEspacos
+                        produtos: produtosComEspacos,
                     });
                 } else {
-                    console.warn('Documento de TPAF não encontrado.');
+                    console.warn('🚫 Documento de TPAF não encontrado.');
                 }
             } catch (error) {
-                console.error('Erro ao buscar proposta:', error);
+                console.error('❌ Erro ao buscar proposta:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProposta();
-    }, [id]);
+        if (id && cnpj) {
+            fetchProposta();
+        }
+    }, [id, cnpj]);
 
     if (loading) {
-        return <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center' }} />;
+        return (
+            <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center' }} />
+        );
     }
 
     if (!proposta) {
@@ -98,16 +122,8 @@ export default function ItemProposta() {
         );
     }
 
-    const handleConfirmar = () => {
-        const cardAtual = proposta.produtos[currentIndex];
-        if (!cardAtual || cardAtual.isSpacer) return;
-
-        console.log("Card atual selecionado:", cardAtual);
-    };
-
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-
             <HeaderCarrossel
                 nome={proposta.nomeProponente}
                 cnpj={proposta.cnpjProponente}
@@ -124,7 +140,15 @@ export default function ItemProposta() {
                 contentContainerStyle={{ paddingHorizontal: SPACER_WIDTH }}
                 renderItem={({ item }) => {
                     if (item.isSpacer) return <View style={{ width: SPACER_WIDTH }} />;
-                    return <CardCarrossel produto={item.produto} quantidade={item.quantidade} descricao={item.descricao} validade={item.validade} peso={item.peso}/>;
+                    return (
+                        <CardCarrossel
+                            produto={item.produto}
+                            quantidade={item.quantidade}
+                            descricao={item.descricao}
+                            validade={item.validade}
+                            peso={item.peso}
+                        />
+                    );
                 }}
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
@@ -140,12 +164,18 @@ export default function ItemProposta() {
                     const produto = produtoAtual.produto;
                     const quantidade = produtoAtual.quantidade;
 
+                    console.log('📤 Enviando para página de confirmação:', {
+                        produtoId,
+                        produto,
+                        quantidade,
+                    });
+
                     router.push({
                         pathname: `/confirmar-entrega/${produtoId}`,
                         params: {
                             produto: JSON.stringify(produto),
                             quantidade: quantidade.toString(),
-                        }
+                        },
                     });
                 }}
             >

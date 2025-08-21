@@ -16,10 +16,11 @@ export default function MinhasCandidaturas() {
 
 
   useEffect(() => {
+    if (!userData?.cnpj) return;
+
     const fetchPropostas = async () => {
       try {
-        const cnpj = '12223202000181';
-        const propostasDoUsuario = await getPropostasDoConsumidor(cnpj);
+        const propostasDoUsuario = await getPropostasDoConsumidor(userData.cnpj);
         setPropostas(propostasDoUsuario);
       } catch (err) {
         console.error('Erro ao carregar propostas:', err);
@@ -30,7 +31,7 @@ export default function MinhasCandidaturas() {
     };
 
     fetchPropostas();
-  }, []);
+  }, [userData]);
 
 
   if (loadingUser || loading) {
@@ -54,7 +55,14 @@ export default function MinhasCandidaturas() {
             subTitle={item.status || item.cnpjProponente || 'Sem status'}
             onPress={() => {
 
-              router.push(`/propostalPage/${item.id}`);
+              router.push({
+                pathname: `/propostalPage/${item.id}`,
+                params: {
+                  id: item.id,
+                  cnpj: userData.cnpj,
+                },
+              });
+
             }}
           />
         )}

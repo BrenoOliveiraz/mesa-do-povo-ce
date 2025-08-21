@@ -12,7 +12,7 @@ export default function CardCarrossel({ produto, quantidade, descricao, validade
       <View style={styles.infoRow}>
         <Text style={styles.label}>Quantidade:</Text>
         <View style={styles.valueContainer}>
-          <Text style={styles.value}>{`${quantidade}\u00a0kg`}</Text>
+          <Text style={styles.value}>{`${quantidade}`}</Text>
         </View>
       </View>
 

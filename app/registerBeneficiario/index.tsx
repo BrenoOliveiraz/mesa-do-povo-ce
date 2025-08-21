@@ -18,6 +18,7 @@ import { auth, db } from '../firebaseConfig';
 export default function RegisterScreen() {
   const [formData, setFormData] = useState({
     nome: '',
+    cnpj: '',
     email: '',
     senha: '',
     confirmarSenha: '',
@@ -30,10 +31,16 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-    const { nome, email, senha, confirmarSenha } = formData;
+    const { nome, cnpj, email, senha, confirmarSenha } = formData;
 
-    if (!nome || !email || !senha || !confirmarSenha) {
+    if (!nome || !cnpj || !email || !senha || !confirmarSenha) {
       Alert.alert('Erro', 'Preencha todos os campos.');
+      return;
+    }
+
+    // Validação simples de CNPJ: exatamente 14 números
+    if (!/^\d{14}$/.test(cnpj)) {
+      Alert.alert('Erro', 'CNPJ inválido. Insira apenas os 14 números, sem pontos ou traços.');
       return;
     }
 
@@ -50,12 +57,13 @@ export default function RegisterScreen() {
 
       await setDoc(doc(db, 'usuarios', uid), {
         nome,
+        cnpj,
         email,
-        tipo: 'beneficiario', // pode ser dinâmico se quiser permitir a escolha
+        tipo: 'beneficiario', 
       });
 
       Alert.alert('Sucesso', 'Conta criada com sucesso!');
-      router.replace('/'); // ou vá para tela desejada
+      router.replace('/'); 
 
     } catch (error: any) {
       console.error('Erro no registro:', error);
@@ -70,10 +78,19 @@ export default function RegisterScreen() {
       <Text style={styles.title}>Criar Conta</Text>
 
       <TextInput
-        placeholder="Nome completo"
+        placeholder="Nome"
         style={styles.input}
         value={formData.nome}
         onChangeText={(text) => handleChange('nome', text)}
+      />
+      <TextInput
+        placeholder="CNPJ"
+        style={styles.input}
+        value={formData.cnpj}
+        onChangeText={(text) => handleChange('cnpj', text.replace(/\D/g, ''))} // remove caracteres não numéricos
+        keyboardType="numeric"
+        autoCapitalize="none"
+        maxLength={14}
       />
       <TextInput
         placeholder="Email"
@@ -111,7 +128,6 @@ export default function RegisterScreen() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

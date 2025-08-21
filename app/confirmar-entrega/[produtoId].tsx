@@ -11,8 +11,9 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { collection, addDoc, Timestamp, doc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { useUser } from "../contexts/UserContext"; // importe seu contexto
 
 export default function ConfirmarEntrega() {
   const { produtoId, produto, quantidade: quantidadeParam } = useLocalSearchParams();
@@ -24,7 +25,7 @@ export default function ConfirmarEntrega() {
   const [imagem, setImagem] = useState(null);
   const [produtoInfo, setProdutoInfo] = useState(null);
 
-  const usuarioId = "01976229000129";
+  const { userData, loadingUser } = useUser(); 
 
   useEffect(() => {
     if (produto) {
@@ -56,10 +57,14 @@ export default function ConfirmarEntrega() {
       return;
     }
 
+    if (!userData?.cnpj) {
+      Alert.alert("Erro", "Usuário não autenticado.");
+      return;
+    }
+
     try {
-
-      const entregasRef = collection(db, "entregasRealizadas", usuarioId, "entregas");
-
+      // Use o CNPJ do usuário no lugar do usuário fixo
+      const entregasRef = collection(db, "entregasRealizadas", userData.cnpj, "entregas");
 
       await addDoc(entregasRef, {
         produtoId,
@@ -79,6 +84,14 @@ export default function ConfirmarEntrega() {
       Alert.alert("Erro", "Não foi possível registrar a entrega.");
     }
   };
+
+  if (loadingUser) {
+    return (
+      <View style={[styles.container, { justifyContent: "center", alignItems: "center" }]}>
+        <Text>Carregando dados do usuário...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

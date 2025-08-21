@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig'; 
+import { useUser } from '../contexts/UserContext';
 
 export default function MinhasCandidaturasScreen() {
   const [entregas, setEntregas] = useState([]);
   const [loading, setLoading] = useState(true);
 
+ const { userData, loadingUser } = useUser();
+
   useEffect(() => {
     const fetchEntregas = async () => {
       try {
-        const entregasRef = collection(db, 'entregasRealizadas', '01976229000129', 'entregas');
+        const entregasRef = collection(db, 'entregasRealizadas', userData.cnpj, 'entregas');
         const snapshot = await getDocs(entregasRef);
 
         const lista = snapshot.docs.map((doc) => {
