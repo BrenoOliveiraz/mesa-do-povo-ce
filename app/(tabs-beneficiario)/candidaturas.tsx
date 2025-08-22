@@ -58,7 +58,7 @@ export default function MinhasCandidaturas() {
               router.push({
                 pathname: `/propostalPage/${item.id}`,
                 params: {
-                  id: item.id,
+
                   cnpj: userData.cnpj,
                 },
               });

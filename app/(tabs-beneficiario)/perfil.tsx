@@ -23,8 +23,8 @@ export default function PerfilScreen() {
           try {
             await signOut(auth);
             await AsyncStorage.removeItem('userData');
-            setUserData(null);
-            router.replace('/login'); // ajuste para sua rota de login
+            router.replace('/login');
+
           } catch (error) {
             Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
             console.error('Erro no logout:', error);

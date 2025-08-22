@@ -19,13 +19,10 @@ const CARD_WIDTH = width * 0.90;
 const SPACER_WIDTH = (width - CARD_WIDTH) / 2;
 
 export default function ItemProposta() {
-    const { id, cnpj } = useLocalSearchParams(); // Recebe o id e o CNPJ via params
+    const { id, cnpj } = useLocalSearchParams();
     const [proposta, setProposta] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    console.log('🆔 ID da proposta:', id);
-    console.log('📛 CNPJ recebido:', cnpj);
 
     const onViewRef = useRef(({ viewableItems }) => {
         const firstVisible = viewableItems.find(item => !item.item.isSpacer);
@@ -40,28 +37,17 @@ export default function ItemProposta() {
         const fetchProposta = async () => {
             try {
                 const docRef = doc(db, 'tpaf', id);
-                console.log('📄 Referência do documento TPAF:', docRef.path);
-
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    console.log('✅ Documento TPAF encontrado:', data);
-
                     const codigoProjeto = data.numTpaf.replace(/\//g, '');
-                    console.log('🧮 Código do projeto formatado:', codigoProjeto);
-
                     const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
-                    console.log('🔗 Referência de produtos:', produtosRef.path);
-
                     const produtosSnap = await getDoc(produtosRef);
 
                     let produtosDoados = [];
                     if (produtosSnap.exists()) {
                         produtosDoados = produtosSnap.data().produtosDoados || [];
-                        console.log('📦 Produtos doados encontrados:', produtosDoados);
-                    } else {
-                        console.warn('⚠️ Documento de produtos não encontrado.');
                     }
 
                     const produtosComEspacos = [
@@ -74,11 +60,7 @@ export default function ItemProposta() {
                         ...data,
                         produtos: produtosComEspacos,
                     });
-                } else {
-                    console.warn('🚫 Documento de TPAF não encontrado.');
                 }
-            } catch (error) {
-                console.error('❌ Erro ao buscar proposta:', error);
             } finally {
                 setLoading(false);
             }
@@ -163,12 +145,6 @@ export default function ItemProposta() {
                     const produtoId = produtoAtual.produtoId;
                     const produto = produtoAtual.produto;
                     const quantidade = produtoAtual.quantidade;
-
-                    console.log('📤 Enviando para página de confirmação:', {
-                        produtoId,
-                        produto,
-                        quantidade,
-                    });
 
                     router.push({
                         pathname: `/confirmar-entrega/${produtoId}`,

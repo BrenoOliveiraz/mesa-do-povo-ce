@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  const firstAuthCheckDone = useRef(false); 
+  const firstAuthCheckDone = useRef(false);
 
   useEffect(() => {
     const loadStoredUser = async () => {
@@ -20,10 +20,10 @@ export const UserProvider = ({ children }) => {
         const storedUser = await AsyncStorage.getItem('userData');
         if (storedUser) {
           setUserData(JSON.parse(storedUser));
-        
+
         }
       } catch (e) {
-       
+
       } finally {
         setInitialLoadComplete(true);
       }
@@ -37,10 +37,10 @@ export const UserProvider = ({ children }) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setLoadingUser(true);
-   
+
 
       if (!firstAuthCheckDone.current) {
-       
+
         firstAuthCheckDone.current = true;
 
         if (user) {
@@ -51,21 +51,21 @@ export const UserProvider = ({ children }) => {
               const fullUserData = { uid: user.uid, ...docSnap.data() };
               setUserData(fullUserData);
               await AsyncStorage.setItem('userData', JSON.stringify(fullUserData));
-       
+
             }
           } catch (error) {
             console.error('Erro ao buscar dados do Firestore:', error);
           }
         } else {
-      
-       
+
+
         }
 
         setLoadingUser(false);
         return;
       }
 
-      
+
       if (user) {
         try {
           const docRef = doc(db, 'usuarios', user.uid);
@@ -74,7 +74,7 @@ export const UserProvider = ({ children }) => {
             const fullUserData = { uid: user.uid, ...docSnap.data() };
             setUserData(fullUserData);
             await AsyncStorage.setItem('userData', JSON.stringify(fullUserData));
-      
+
           }
         } catch (error) {
           console.error('Erro ao buscar dados do Firestore:', error);
@@ -82,7 +82,7 @@ export const UserProvider = ({ children }) => {
       } else {
         setUserData(null);
         await AsyncStorage.removeItem('userData');
-  
+
       }
 
       setLoadingUser(false);
@@ -92,7 +92,7 @@ export const UserProvider = ({ children }) => {
   }, [initialLoadComplete]);
 
   return (
-    <UserContext.Provider value={{ userData, loadingUser }}>
+    <UserContext.Provider value={{ userData, setUserData, loadingUser }}>
       {children}
     </UserContext.Provider>
   );
