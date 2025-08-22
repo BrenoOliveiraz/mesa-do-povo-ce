@@ -19,22 +19,22 @@ export default function DeliveryDetalhe() {
         const docRef = doc(
           db,
           'entregasRealizadas',
-          userData.cnpj, // <- esse é o doc fixo que você está usando
+          userData.cnpj, 
           'entregas',
           id as string
         );
 
         const snapshot = await getDoc(docRef);
 
-        console.log("📌 Snapshot existe?", snapshot.exists());
+
         if (snapshot.exists()) {
-          console.log("📦 Dados da entrega:", snapshot.data());
+          console.log(" Dados da entrega:", snapshot.data());
           setEntrega(snapshot.data());
         } else {
-          console.warn("⚠️ Entrega não encontrada");
+          console.warn(" Entrega não encontrada");
         }
       } catch (error) {
-        console.error("❌ Erro ao buscar entrega:", error);
+        console.error(" Erro ao buscar entrega:", error);
       } finally {
         setLoading(false);
       }

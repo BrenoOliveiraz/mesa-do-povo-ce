@@ -14,7 +14,7 @@ export default function DeliveryCard({ id, data, hora, titulo, status, corStatus
     const router = useRouter();
 
     const handlePress = () => {
-        console.log("📌 Navegando para entrega:", id);
+      
 
         router.push({
             pathname: `/deliveryItem/${id}`,
