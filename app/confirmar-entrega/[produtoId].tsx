@@ -13,7 +13,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { useUser } from "../contexts/UserContext"; // importe seu contexto
+import { useUser } from "../contexts/UserContext";
 
 export default function ConfirmarEntrega() {
   const { produtoId, produto, quantidade: quantidadeParam } = useLocalSearchParams();
@@ -25,7 +25,7 @@ export default function ConfirmarEntrega() {
   const [imagem, setImagem] = useState(null);
   const [produtoInfo, setProdutoInfo] = useState(null);
 
-  const { userData, loadingUser } = useUser(); 
+  const { userData, loadingUser } = useUser();
 
   useEffect(() => {
     if (produto) {
@@ -36,7 +36,23 @@ export default function ConfirmarEntrega() {
         console.warn("Erro ao fazer parse do produto:", error);
       }
     }
+
+    const now = new Date();
+
+    const formatterData = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+
+    const formatterHora = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    setDataEntrega(formatterData.format(now));
+    setHoraEntrega(formatterHora.format(now));
   }, [produto]);
+
 
   const escolherImagem = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -63,19 +79,23 @@ export default function ConfirmarEntrega() {
     }
 
     try {
-      // Use o CNPJ do usuário no lugar do usuário fixo
       const entregasRef = collection(db, "entregasRealizadas", userData.cnpj, "entregas");
 
-      await addDoc(entregasRef, {
+      const entregaData = {
         produtoId,
         produto: produtoInfo,
         dataEntrega,
         horaEntrega,
-        quantidade: Number(quantidade),
         observacao,
         imagem,
         criadoEm: Timestamp.now(),
-      });
+      };
+
+      if (quantidade) {
+        entregaData.quantidade = quantidade; // sem conversão para number
+      }
+
+      await addDoc(entregasRef, entregaData);
 
       Alert.alert("Sucesso", "Entrega registrada com sucesso!");
       router.back();
@@ -110,14 +130,14 @@ export default function ConfirmarEntrega() {
         style={styles.input}
         placeholder="Data da entrega (dd/mm/aaaa)"
         value={dataEntrega}
-        onChangeText={setDataEntrega}
+        editable={false} 
       />
 
       <TextInput
         style={styles.input}
         placeholder="Hora da entrega (hh:mm)"
         value={horaEntrega}
-        onChangeText={setHoraEntrega}
+        editable={false} 
       />
 
       <TextInput

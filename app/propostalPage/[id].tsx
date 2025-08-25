@@ -24,6 +24,8 @@ export default function ItemProposta() {
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    console.log(id, cnpj)
+
     const onViewRef = useRef(({ viewableItems }) => {
         const firstVisible = viewableItems.find(item => !item.item.isSpacer);
         if (firstVisible) {

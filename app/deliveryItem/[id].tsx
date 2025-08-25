@@ -14,7 +14,7 @@ export default function DeliveryDetalhe() {
   useEffect(() => {
     const fetchEntrega = async () => {
       try {
-        console.log("🔎 Buscando entrega com ID:", id);
+     
 
         const docRef = doc(
           db,
@@ -28,7 +28,7 @@ export default function DeliveryDetalhe() {
 
 
         if (snapshot.exists()) {
-          console.log(" Dados da entrega:", snapshot.data());
+  
           setEntrega(snapshot.data());
         } else {
           console.warn(" Entrega não encontrada");

@@ -13,7 +13,7 @@ export default function RegisterAgricultor() {
 
     const nextSesion = () => {
         setNumSesion(numSesion + 1)
-        console.log('SESSAO', numSesion)
+   
     }
 
     return (
