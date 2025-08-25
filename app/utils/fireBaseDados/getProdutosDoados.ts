@@ -3,13 +3,14 @@ import { doc, getDoc } from "firebase/firestore";
 
 export const getProdutosDoados = async (cnpj, codigoProjeto) => {
   try {
- 
+
     const tpafRefDoc = doc(db, "consumidores", cnpj, codigoProjeto, "tpafRef");
 
     const docSnap = await getDoc(tpafRefDoc);
 
     if (docSnap.exists()) {
       const data = docSnap.data();
+      console.log(data)
 
       return data.produtosDoados || [];
     } else {
@@ -18,6 +19,7 @@ export const getProdutosDoados = async (cnpj, codigoProjeto) => {
     }
   } catch (error) {
     console.error("Erro ao buscar produtosDoados:", error);
+
     return [];
   }
 };

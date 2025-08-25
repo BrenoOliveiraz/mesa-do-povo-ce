@@ -29,6 +29,7 @@ export default function ConfirmarEntrega() {
 
   useEffect(() => {
     if (produto) {
+      console.log(produto)
       try {
         const parsedProduto = JSON.parse(produto);
         setProdutoInfo(parsedProduto);
@@ -63,7 +64,7 @@ export default function ConfirmarEntrega() {
     }
 
     try {
-      // Use o CNPJ do usuário no lugar do usuário fixo
+     
       const entregasRef = collection(db, "entregasRealizadas", userData.cnpj, "entregas");
 
       await addDoc(entregasRef, {
