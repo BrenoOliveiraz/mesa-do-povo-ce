@@ -11,12 +11,13 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, updateDoc, doc,getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { useUser } from "../contexts/UserContext"; // importe seu contexto
+import { useUser } from "../contexts/UserContext";
+
 
 export default function ConfirmarEntrega() {
-  const { produtoId, produto, quantidade: quantidadeParam } = useLocalSearchParams();
+  const { produtoId, produto, quantidade: quantidadeParam, cnpj } = useLocalSearchParams();
 
   const [dataEntrega, setDataEntrega] = useState("");
   const [horaEntrega, setHoraEntrega] = useState("");
@@ -25,7 +26,7 @@ export default function ConfirmarEntrega() {
   const [imagem, setImagem] = useState(null);
   const [produtoInfo, setProdutoInfo] = useState(null);
 
-  const { userData, loadingUser } = useUser(); 
+  const { userData, loadingUser } = useUser();
 
   useEffect(() => {
     if (produto) {
@@ -52,6 +53,8 @@ export default function ConfirmarEntrega() {
   };
 
   const salvarEntrega = async () => {
+    console.log("produtoId:", produtoId);
+
     if (!produtoId) {
       Alert.alert("Erro", "Produto não identificado.");
       return;
@@ -63,9 +66,8 @@ export default function ConfirmarEntrega() {
     }
 
     try {
-      // Use o CNPJ do usuário no lugar do usuário fixo
+      // salvar entrega no histórico
       const entregasRef = collection(db, "entregasRealizadas", userData.cnpj, "entregas");
-
       await addDoc(entregasRef, {
         produtoId,
         produto: produtoInfo,
@@ -76,6 +78,21 @@ export default function ConfirmarEntrega() {
         imagem,
         criadoEm: Timestamp.now(),
       });
+
+      // caminho do documento que contém o array
+      const produtoDocRef = doc(db, "consumidores", userData.cnpj, "CE2025020248", "tpafRef");
+
+      const snap = await getDoc(produtoDocRef);
+      if (!snap.exists()) throw new Error("Documento não encontrado");
+
+      let produtos = snap.data().produtosDoados || [];
+
+      // atualiza o produto dentro do array
+      produtos = produtos.map((p) =>
+        p.produtoId === produtoId ? { ...p, entregue: true } : p
+      );
+
+      await updateDoc(produtoDocRef, { produtosDoados: produtos });
 
       Alert.alert("Sucesso", "Entrega registrada com sucesso!");
       router.back();

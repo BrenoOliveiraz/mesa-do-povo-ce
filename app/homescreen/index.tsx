@@ -10,8 +10,7 @@ export default function Homescreen() {
   const { userData, loadingUser } = useUser();
 
   useEffect(() => {
-    console.log('📦 userData:', userData);
-    console.log('⌛ loadingUser:', loadingUser);
+
 
     if (!loadingUser) {
       if (userData) {

@@ -1,25 +1,35 @@
 import { db } from "@/app/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
-export const getProdutosDoados = async (cnpj, codigoProjeto) => {
-  try {
 
-    const tpafRefDoc = doc(db, "consumidores", cnpj, codigoProjeto, "tpafRef");
 
-    const docSnap = await getDoc(tpafRefDoc);
+export async function getProdutosDoados(id, cnpj) {
+  if (!id || !cnpj) return null;
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      console.log(data)
+  const docRef = doc(db, 'tpaf', id);
+  const docSnap = await getDoc(docRef);
 
-      return data.produtosDoados || [];
-    } else {
-      console.warn("Documento tpafRef não encontrado.");
-      return [];
-    }
-  } catch (error) {
-    console.error("Erro ao buscar produtosDoados:", error);
+  if (!docSnap.exists()) return null;
 
-    return [];
+  const data = docSnap.data();
+  const codigoProjeto = data.numTpaf.replace(/\//g, '');
+
+  const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
+  const produtosSnap = await getDoc(produtosRef);
+
+  let produtosDoados = [];
+  if (produtosSnap.exists()) {
+    produtosDoados = produtosSnap.data().produtosDoados || [];
   }
-};
+
+  const produtosComEspacos = [
+    { isSpacer: true },
+    ...produtosDoados,
+    { isSpacer: true },
+  ];
+
+  return {
+    ...data,
+    produtos: produtosComEspacos,
+  };
+}

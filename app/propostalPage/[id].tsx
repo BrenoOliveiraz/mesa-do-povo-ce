@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
     View,
     Text,
@@ -8,11 +8,12 @@ import {
     ActivityIndicator,
     TouchableOpacity,
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import CardCarrossel from '../components/CardCarrossel';
 import HeaderCarrossel from '../components/HeaderCarrossel';
+import { getProdutosDoados } from '../utils/fireBaseDados/getProdutosDoados';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.90;
@@ -20,6 +21,7 @@ const SPACER_WIDTH = (width - CARD_WIDTH) / 2;
 
 export default function ItemProposta() {
     const { id, cnpj } = useLocalSearchParams();
+
     const [proposta, setProposta] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,43 +35,23 @@ export default function ItemProposta() {
 
     const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
-    useEffect(() => {
-        const fetchProposta = async () => {
-            try {
-                const docRef = doc(db, 'tpaf', id);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const codigoProjeto = data.numTpaf.replace(/\//g, '');
-                    const produtosRef = doc(db, 'consumidores', cnpj, codigoProjeto, 'tpafRef');
-                    const produtosSnap = await getDoc(produtosRef);
-
-                    let produtosDoados = [];
-                    if (produtosSnap.exists()) {
-                        produtosDoados = produtosSnap.data().produtosDoados || [];
-                    }
-
-                    const produtosComEspacos = [
-                        { isSpacer: true },
-                        ...produtosDoados,
-                        { isSpacer: true },
-                    ];
-
-                    setProposta({
-                        ...data,
-                        produtos: produtosComEspacos,
-                    });
+    useFocusEffect(
+        useCallback(() => {
+            const carregarProposta = async () => {
+                setLoading(true);
+                try {
+                    const data = await getProdutosDoados(id, cnpj);
+                    setProposta(data);
+                } finally {
+                    setLoading(false);
                 }
-            } finally {
-                setLoading(false);
-            }
-        };
+            };
 
-        if (id && cnpj) {
-            fetchProposta();
-        }
-    }, [id, cnpj]);
+            if (id && cnpj) {
+                carregarProposta();
+            }
+        }, [id, cnpj])
+    );
 
     if (loading) {
         return (
@@ -104,6 +86,9 @@ export default function ItemProposta() {
         );
     }
 
+    const produtoAtual = proposta.produtos[currentIndex];
+    const isEntregue = produtoAtual?.entregue === true;
+
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <HeaderCarrossel
@@ -137,10 +122,9 @@ export default function ItemProposta() {
             />
 
             <TouchableOpacity
-                style={styles.button}
+                style={[styles.button, isEntregue && styles.buttonDisabled]}
                 onPress={() => {
-                    const produtoAtual = proposta.produtos[currentIndex];
-                    if (!produtoAtual || produtoAtual.isSpacer) return;
+                    if (!produtoAtual || produtoAtual.isSpacer || isEntregue) return;
 
                     const produtoId = produtoAtual.produtoId;
                     const produto = produtoAtual.produto;
@@ -151,11 +135,15 @@ export default function ItemProposta() {
                         params: {
                             produto: JSON.stringify(produto),
                             quantidade: quantidade.toString(),
+                            produtoId: produtoId,
                         },
                     });
                 }}
+                disabled={isEntregue}
             >
-                <Text style={styles.buttonText}>Confirmar Entrega</Text>
+                <Text style={styles.buttonText}>
+                    {isEntregue ? 'Já Entregue' : 'Confirmar Entrega'}
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -170,10 +158,14 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 30,
     },
+    buttonDisabled: {
+        backgroundColor: '#cccccc',
+    },
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 16,
+        textAlign: 'center',
     },
     center: {
         flex: 1,

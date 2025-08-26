@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig'; 
+import { db } from '../firebaseConfig';
 import { useUser } from '../contexts/UserContext';
 import DeliveryCard from '../components/DeliveryCard';
-
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function MinhasCandidaturasScreen() {
   const [entregas, setEntregas] = useState([]);
@@ -12,34 +12,39 @@ export default function MinhasCandidaturasScreen() {
 
   const { userData } = useUser();
 
-  useEffect(() => {
-    const fetchEntregas = async () => {
-      try {
-        const entregasRef = collection(db, 'entregasRealizadas', userData.cnpj, 'entregas');
-        const snapshot = await getDocs(entregasRef);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchEntregas = async () => {
+        setLoading(true);
+        try {
+          const entregasRef = collection(db, 'entregasRealizadas', userData.cnpj, 'entregas');
+          const snapshot = await getDocs(entregasRef);
 
-        const lista = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            data: data.dataEntrega || 'Data não informada',
-            hora: data.horaEntrega || 'Hora não informada',
-            titulo: `${data.produto || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
-            status: 'CONFIRMADA', 
-            corStatus: '#4CAF50',
-          };
-        });
+          const lista = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              data: data.dataEntrega || 'Data não informada',
+              hora: data.horaEntrega || 'Hora não informada',
+              titulo: `${data.produto?.nome || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
+              status: 'CONFIRMADA',
+              corStatus: '#4CAF50',
+            };
+          });
 
-        setEntregas(lista);
-      } catch (error) {
-        console.error('Erro ao buscar entregas:', error);
-      } finally {
-        setLoading(false);
+          setEntregas(lista);
+        } catch (error) {
+          console.error('Erro ao buscar entregas:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if (userData?.cnpj) {
+        fetchEntregas();
       }
-    };
-
-    fetchEntregas();
-  }, []);
+    }, [userData?.cnpj])
+  );
 
   if (loading) {
     return (
@@ -63,8 +68,8 @@ export default function MinhasCandidaturasScreen() {
           data={confirmadas}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <DeliveryCard 
-              id={item.id} 
+            <DeliveryCard
+              id={item.id}
               data={item.data}
               hora={item.hora}
               titulo={item.titulo}
