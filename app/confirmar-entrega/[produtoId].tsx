@@ -91,8 +91,14 @@ export default function ConfirmarEntrega() {
 
       // atualiza o produto dentro do array
       produtos = produtos.map((p) =>
-        p.produtoId === produtoId ? { ...p, entregue: true } : p
+        p.produtoId === produtoId
+          ? { ...p, entregue: true, quantidadeEntregue: Number(quantidade) }
+          : p
       );
+
+      await updateDoc(produtoDocRef, { produtosDoados: produtos });
+
+
 
       await updateDoc(produtoDocRef, { produtosDoados: produtos });
 
