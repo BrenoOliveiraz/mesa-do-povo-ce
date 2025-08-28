@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
 
-export default function CardCarrossel({ produto, quantidade, descricao, validade, peso }) {
+export default function CardCarrossel({ produto, quantidade, descricao, validade, peso, isEntregue }) {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{produto || produto}</Text>
@@ -29,6 +29,7 @@ export default function CardCarrossel({ produto, quantidade, descricao, validade
           <Text style={styles.value}>{validade}</Text>
         </View>
       )}
+
       {descricao && (
         <View style={styles.descriptionContainer}>
           <Text style={styles.label}>Descrição:</Text>
@@ -36,6 +37,22 @@ export default function CardCarrossel({ produto, quantidade, descricao, validade
         </View>
       )}
 
+      {/* Exibe imagem se o produto foi entregue */}
+      {isEntregue && (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBze6V-7Gr1OHRf7CCny2-XQAq6vMTByu9ew&s' }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+
+          <Image
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/845/845646.png' }}
+            style={styles.checkIcon}
+            resizeMode="contain"
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -87,5 +104,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
+  },
+  imageContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 300,
+    borderRadius: 10,
+  },
+  checkIcon: {
+    width: 40,
+    height: 40,
+    marginTop: 10,
   },
 });

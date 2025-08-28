@@ -114,6 +114,8 @@ export default function ItemProposta() {
                             descricao={item.descricao}
                             validade={item.validade}
                             peso={item.peso}
+                            isEntregue={item.entregue === true}
+
                         />
                     );
                 }}

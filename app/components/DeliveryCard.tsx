@@ -12,15 +12,12 @@ type DeliveryCardProps = {
 
 export default function DeliveryCard({ id, data, hora, titulo, status, corStatus }: DeliveryCardProps) {
     const router = useRouter();
-
+    
     const handlePress = () => {
-      
-
-        router.push({
-            pathname: `/deliveryItem/${id}`,
-            params: { data, hora, titulo, status },
-        });
+        const query = new URLSearchParams({ data, hora, titulo, status }).toString();
+        router.push(`/deliveryItem/${id}?${query}`);
     };
+
 
 
     return (

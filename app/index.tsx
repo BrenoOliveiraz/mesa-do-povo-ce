@@ -1,35 +1,28 @@
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-
-
 import { router } from 'expo-router';
 import ActionButton from './components/ActionButton';
 
-
-
-
 export default function Index() {
-
   return (
     <View style={styles.container}>
-      <View style={styles.inner}>
+      <Image
+        source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2731/2731689.png' }} 
+        style={styles.image}
+        resizeMode="contain"
+      />
 
-
-
-        <Text style={styles.title}>
-          Bem vindo!,  {'\n'}
-
-          <Text style={styles.bold}>
-            mergulhe no que  {'\n'}importa
-          </Text>
-
+      <Text style={styles.title}>
+        Bem-vindo ao{' '}
+        <Text style={styles.bold}>
+          Mesa do Povo
         </Text>
+      </Text>
 
+      <Text style={styles.subtitle}>
+        Gerencie entregas de doações com agilidade, clareza e empatia.
+      </Text>
 
-
-        <ActionButton onPress={()=> router.replace('/boot')} title='Iniciar' />
-      </View>
-
-
+      <ActionButton  onPress={() => router.replace('/boot')} title="Iniciar" />
     </View>
   );
 }
@@ -42,35 +35,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#021123",
-    gap: 40
+    padding: 24,
+    gap: 24,
   },
-  inner: {
-    gap: 16
+  image: {
+    width: width * 0.6,
+    height: width * 0.6,
   },
-  
-logo: {
-  width: 260,  
-  height: 80,   
-
-  alignSelf: 'center',
-  marginBottom: 16,
-},
-
-
-
   title: {
     color: '#FFF',
     textAlign: 'center',
-    fontSize: 26
+    fontSize: 28,
   },
-
   bold: {
     fontWeight: 'bold',
-
-  }
-
-
-
-
-
-})
+    color: '#00c853',
+  },
+  subtitle: {
+    color: '#ccc',
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+});
