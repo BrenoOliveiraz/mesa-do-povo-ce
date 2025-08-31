@@ -9,10 +9,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
-import CardCarrossel from '../components/CardCarrossel';
-import HeaderCarrossel from '../components/HeaderCarrossel';
-import { getProdutosDoados } from '../utils/fireBaseDados/getProdutosDoados';
 import CardVertical from '../components/CardVertical';
+import { getProdutosDoados } from '../utils/fireBaseDados/getProdutosDoados';
+import HeaderCarrossel from '../components/HeaderCarrossel';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.90;
@@ -98,7 +97,7 @@ export default function ItemProposta() {
 
             <FlatList
                 data={proposta.produtos}
-
+                pagingEnabled
                 snapToInterval={CARD_WIDTH + 20}
                 decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
@@ -107,61 +106,44 @@ export default function ItemProposta() {
                 renderItem={({ item }) => {
                     if (item.isSpacer) return <View style={{ width: SPACER_WIDTH }} />;
 
-                    const isEntregueItem = item.entregue === true;
+                    const total = Number(item.quantidade) || 0;
+                    const entregue = Number(item.quantidadeEntregue) || 0;
+                    const restante = total - entregue;
+                    const podeClicar = restante > 0;
 
                     return (
                         <CardVertical
                             produto={item.produto}
                             quantidade={item.quantidade}
-                            isEntregue={isEntregueItem}
                             quantidadeEntregue={item.quantidadeEntregue}
+                            isEntregue={restante <= 0}
                             onPress={() => {
-                                if (item.isSpacer || isEntregueItem) return;
+                                if (!podeClicar) return;
 
-                                const produtoId = item.produtoId;
-                                const produto = item.produto;
-                                const quantidade = item.quantidade;
-
+                                // Passando o produto como um JSON válido
                                 router.push({
-                                    pathname: `/confirmar-entrega/${produtoId}`,
+                                    pathname: `/confirmar-entrega/${item.produtoId}`,
                                     params: {
-                                        produto: JSON.stringify(produto),
-                                        quantidade: quantidade.toString(),
-                                        produtoId: produtoId,
+                                        produto: JSON.stringify({
+                                            nome: item.produto, // produto agora é um objeto com o nome
+                                            // adicione outras informações que precisar
+                                        }),
+                                        quantidade: item.quantidade.toString(),
+                                        produtoId: item.produtoId,
                                     },
                                 });
                             }}
                         />
                     );
                 }}
-
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
             />
-
-
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: '#2e7d32',
-        paddingVertical: 14,
-        paddingHorizontal: 30,
-        borderRadius: 25,
-        alignSelf: 'center',
-        marginBottom: 30,
-    },
-    buttonDisabled: {
-        backgroundColor: '#cccccc',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 16,
-        textAlign: 'center',
-    },
     center: {
         flex: 1,
         justifyContent: 'center',

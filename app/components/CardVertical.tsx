@@ -6,21 +6,21 @@ export default function CardVertical({ produto, quantidade, isEntregue, onPress,
     const entregue = Number(quantidadeEntregue) || 0;
     const restante = total - entregue;
 
-
+    const foiEntregueTudo = restante <= 0;
 
     return (
         <TouchableOpacity
             onPress={onPress}
-            disabled={isEntregue}
-            activeOpacity={isEntregue ? 1 : 0.7}
+            disabled={foiEntregueTudo}
+            activeOpacity={foiEntregueTudo ? 1 : 0.7}
         >
-            <View style={[styles.card, isEntregue && styles.cardEntregue]}>
-                <Text style={[styles.title, isEntregue && styles.titleEntregue]}>
+            <View style={[styles.card, foiEntregueTudo && styles.cardEntregue]}>
+                <Text style={[styles.title, foiEntregueTudo && styles.titleEntregue]}>
                     {produto || 'Produto'}
                 </Text>
 
                 <View style={styles.infoRow}>
-                    <Text style={styles.label}>Quantidade total:</Text>
+                    <Text className={styles.label}>Quantidade total:</Text>
                     <View style={styles.valueContainer}>
                         <Text style={styles.value}>{`${quantidade} kg`}</Text>
                     </View>
@@ -34,14 +34,15 @@ export default function CardVertical({ produto, quantidade, isEntregue, onPress,
                         </View>
                     </View>
                 )}
+
                 <View style={styles.infoRow}>
                     <Text style={styles.label}>Restante:</Text>
                     <View style={styles.valueContainer}>
-                        <Text style={styles.value}> {`${restante} kg`}</Text>
+                        <Text style={styles.value}>{`${restante} kg`}</Text>
                     </View>
                 </View>
 
-                {isEntregue && (
+                {foiEntregueTudo && (
                     <View style={styles.entregueBadge}>
                         <Text style={styles.entregueText}>ENTREGUE</Text>
                     </View>
