@@ -13,35 +13,36 @@ export default function DeliveryDetalhe() {
 
   useEffect(() => {
     const fetchEntrega = async () => {
-      try {
-        console.log("🔎 Buscando entrega com ID:", id);
+      if (!userData || !id) return;
 
-        const docRef = doc(
-          db,
-          'entregasRealizadas',
-          userData.cnpj, 
-          'entregas',
-          id as string
-        );
+      setLoading(true);
+      try {
+        const docRef = doc(db, 'entregasRealizadas', id as string);
 
         const snapshot = await getDoc(docRef);
 
-
         if (snapshot.exists()) {
-          console.log(" Dados da entrega:", snapshot.data());
-          setEntrega(snapshot.data());
+          const data = snapshot.data();
+          if (data.cnpj !== userData.cnpj) {
+            console.warn('Acesso negado à entrega');
+            setEntrega(null);
+          } else {
+            setEntrega(data);
+          }
         } else {
-          console.warn(" Entrega não encontrada");
+          setEntrega(null);
         }
       } catch (error) {
-        console.error(" Erro ao buscar entrega:", error);
+        console.error('Erro ao buscar entrega:', error);
+        setEntrega(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchEntrega();
-  }, [id]);
+  }, [id, userData]);
+
 
   if (loading) {
     return (
@@ -66,7 +67,7 @@ export default function DeliveryDetalhe() {
       <Text style={styles.info}>Hora: {hora}</Text>
       <Text style={styles.info}>Status: {status}</Text>
 
-   
+
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Detalhes da entrega:</Text>
         <Text style={styles.cardContent}>Produto: {entrega.produto}</Text>

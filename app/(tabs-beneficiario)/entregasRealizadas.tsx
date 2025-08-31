@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useUser } from '../contexts/UserContext';
 import DeliveryCard from '../components/DeliveryCard';
@@ -17,8 +17,12 @@ export default function MinhasCandidaturasScreen() {
       const fetchEntregas = async () => {
         setLoading(true);
         try {
-          const entregasRef = collection(db, 'entregasRealizadas', userData.cnpj, 'entregas');
-          const snapshot = await getDocs(entregasRef);
+          // Referência para a coleção
+          const entregasRef = collection(db, 'entregasRealizadas');
+
+          // Query filtrando apenas pelo CNPJ do usuário
+          const q = query(entregasRef, where("cnpj", "==", userData.cnpj));
+          const snapshot = await getDocs(q);
 
           const lista = snapshot.docs.map((doc) => {
             const data = doc.data();
@@ -26,7 +30,7 @@ export default function MinhasCandidaturasScreen() {
               id: doc.id,
               data: data.dataEntrega || 'Data não informada',
               hora: data.horaEntrega || 'Hora não informada',
-              titulo: `${data.produto?.nome || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
+              titulo: `${data.produto || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
               status: 'CONFIRMADA',
               corStatus: '#4CAF50',
             };

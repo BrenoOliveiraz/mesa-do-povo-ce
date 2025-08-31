@@ -24,7 +24,6 @@ export default function PerfilScreen() {
             await signOut(auth);
             await AsyncStorage.removeItem('userData');
             router.replace('/login');
-
           } catch (error) {
             Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
             console.error('Erro no logout:', error);
@@ -62,24 +61,24 @@ export default function PerfilScreen() {
         <Text style={styles.userEmail}>{userData.email || 'sem email cadastrado'}</Text>
       </View>
 
-      <View style={styles.optionsList}>
+      <View style={styles.optionsContainer}>
         <TouchableOpacity style={styles.optionItem} activeOpacity={0.7} onPress={() => console.log('Editar Perfil')}>
-          <Ionicons name="create-outline" size={22} color="#023047" />
+          <Ionicons name="create-outline" size={24} color="#023047" />
           <Text style={styles.optionText}>Editar Perfil</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionItem} activeOpacity={0.7} onPress={() => console.log('Alterar Senha')}>
-          <Ionicons name="key-outline" size={22} color="#023047" />
+          <Ionicons name="key-outline" size={24} color="#023047" />
           <Text style={styles.optionText}>Alterar Senha</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionItem} activeOpacity={0.7} onPress={() => console.log('Ajuda')}>
-          <Ionicons name="help-circle-outline" size={22} color="#023047" />
+          <Ionicons name="help-circle-outline" size={24} color="#023047" />
           <Text style={styles.optionText}>Ajuda</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.optionItem, styles.logout]} activeOpacity={0.7} onPress={handleLogout}>
-          <Ionicons name="exit-outline" size={22} color="#D00000" />
+          <Ionicons name="exit-outline" size={24} color="#D00000" />
           <Text style={[styles.optionText, { color: '#D00000' }]}>Sair</Text>
         </TouchableOpacity>
       </View>
@@ -90,7 +89,7 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#F0F2F5',
   },
   centered: {
     justifyContent: 'center',
@@ -101,44 +100,65 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   profileHeader: {
+    backgroundColor: '#fff',
     alignItems: 'center',
     paddingVertical: 40,
-    backgroundColor: '#FFFFFF',
-    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
   },
   avatarContainer: {
     borderRadius: 60,
     overflow: 'hidden',
     marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 5,
   },
   userName: {
+
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#023047',
-    marginBottom: 6,
+    marginBottom: 4,
+    alignItems: 'center',
+    textAlign: 'center'
+    
   },
   userEmail: {
     fontSize: 16,
-    color: '#666',
+    color: '#777',
   },
-  optionsList: {
-    paddingHorizontal: 24,
+  optionsContainer: {
+    marginTop: 24,
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   optionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderColor: '#EEE',
   },
   optionText: {
-    fontSize: 17,
+    fontSize: 16,
     color: '#023047',
     marginLeft: 14,
     fontWeight: '600',
   },
   logout: {
-    marginTop: 40,
     borderBottomWidth: 0,
+    marginTop: 10,
   },
 });

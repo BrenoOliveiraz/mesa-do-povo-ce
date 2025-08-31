@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { collection, addDoc, Timestamp, updateDoc, doc,getDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp, updateDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { useUser } from "../contexts/UserContext";
 
@@ -67,8 +67,9 @@ export default function ConfirmarEntrega() {
 
     try {
       // salvar entrega no histórico
-      const entregasRef = collection(db, "entregasRealizadas", userData.cnpj, "entregas");
+      const entregasRef = collection(db, "entregasRealizadas");
       await addDoc(entregasRef, {
+        cnpj: userData.cnpj,
         produtoId,
         produto: produtoInfo,
         dataEntrega,
@@ -78,6 +79,7 @@ export default function ConfirmarEntrega() {
         imagem,
         criadoEm: Timestamp.now(),
       });
+
 
       // caminho do documento que contém o array
       const produtoDocRef = doc(db, "consumidores", userData.cnpj, "CE2025020248", "tpafRef");
@@ -89,8 +91,14 @@ export default function ConfirmarEntrega() {
 
       // atualiza o produto dentro do array
       produtos = produtos.map((p) =>
-        p.produtoId === produtoId ? { ...p, entregue: true } : p
+        p.produtoId === produtoId
+          ? { ...p, entregue: true, quantidadeEntregue: Number(quantidade) }
+          : p
       );
+
+      await updateDoc(produtoDocRef, { produtosDoados: produtos });
+
+
 
       await updateDoc(produtoDocRef, { produtosDoados: produtos });
 

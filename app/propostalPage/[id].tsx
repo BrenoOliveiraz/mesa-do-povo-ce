@@ -9,11 +9,10 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
-import { db } from '../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
 import CardCarrossel from '../components/CardCarrossel';
 import HeaderCarrossel from '../components/HeaderCarrossel';
 import { getProdutosDoados } from '../utils/fireBaseDados/getProdutosDoados';
+import CardVertical from '../components/CardVertical';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.90;
@@ -99,7 +98,7 @@ export default function ItemProposta() {
 
             <FlatList
                 data={proposta.produtos}
-                horizontal
+
                 snapToInterval={CARD_WIDTH + 20}
                 decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
@@ -107,44 +106,40 @@ export default function ItemProposta() {
                 contentContainerStyle={{ paddingHorizontal: SPACER_WIDTH }}
                 renderItem={({ item }) => {
                     if (item.isSpacer) return <View style={{ width: SPACER_WIDTH }} />;
+
+                    const isEntregueItem = item.entregue === true;
+
                     return (
-                        <CardCarrossel
+                        <CardVertical
                             produto={item.produto}
                             quantidade={item.quantidade}
-                            descricao={item.descricao}
-                            validade={item.validade}
-                            peso={item.peso}
+                            isEntregue={isEntregueItem}
+                            quantidadeEntregue={item.quantidadeEntregue}
+                            onPress={() => {
+                                if (item.isSpacer || isEntregueItem) return;
+
+                                const produtoId = item.produtoId;
+                                const produto = item.produto;
+                                const quantidade = item.quantidade;
+
+                                router.push({
+                                    pathname: `/confirmar-entrega/${produtoId}`,
+                                    params: {
+                                        produto: JSON.stringify(produto),
+                                        quantidade: quantidade.toString(),
+                                        produtoId: produtoId,
+                                    },
+                                });
+                            }}
                         />
                     );
                 }}
+
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
             />
 
-            <TouchableOpacity
-                style={[styles.button, isEntregue && styles.buttonDisabled]}
-                onPress={() => {
-                    if (!produtoAtual || produtoAtual.isSpacer || isEntregue) return;
 
-                    const produtoId = produtoAtual.produtoId;
-                    const produto = produtoAtual.produto;
-                    const quantidade = produtoAtual.quantidade;
-
-                    router.push({
-                        pathname: `/confirmar-entrega/${produtoId}`,
-                        params: {
-                            produto: JSON.stringify(produto),
-                            quantidade: quantidade.toString(),
-                            produtoId: produtoId,
-                        },
-                    });
-                }}
-                disabled={isEntregue}
-            >
-                <Text style={styles.buttonText}>
-                    {isEntregue ? 'Já Entregue' : 'Confirmar Entrega'}
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 }
