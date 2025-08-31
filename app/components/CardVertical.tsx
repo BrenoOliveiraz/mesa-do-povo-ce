@@ -7,6 +7,7 @@ export default function CardVertical({ produto, quantidade, isEntregue, onPress,
     const restante = total - entregue;
 
     const foiEntregueTudo = restante <= 0;
+    const temEntregaParcial = entregue > 0 && restante > 0;
 
     return (
         <TouchableOpacity
@@ -20,7 +21,7 @@ export default function CardVertical({ produto, quantidade, isEntregue, onPress,
                 </Text>
 
                 <View style={styles.infoRow}>
-                    <Text className={styles.label}>Quantidade total:</Text>
+                    <Text style={styles.label}>Quantidade total:</Text>
                     <View style={styles.valueContainer}>
                         <Text style={styles.value}>{`${quantidade} kg`}</Text>
                     </View>
@@ -37,7 +38,12 @@ export default function CardVertical({ produto, quantidade, isEntregue, onPress,
 
                 <View style={styles.infoRow}>
                     <Text style={styles.label}>Restante:</Text>
-                    <View style={styles.valueContainer}>
+                    <View style={styles.valueContainerRow}>
+                        {temEntregaParcial && (
+                            <View style={styles.pendenteBadge}>
+                                <Text style={styles.pendenteText}>PENDENTE</Text>
+                            </View>
+                        )}
                         <Text style={styles.value}>{`${restante} kg`}</Text>
                     </View>
                 </View>
@@ -92,6 +98,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
+    valueContainerRow: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 8,
+    },
     value: {
         fontSize: 15,
         fontWeight: '500',
@@ -111,5 +124,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 12,
         letterSpacing: 1,
+    },
+    pendenteBadge: {
+        backgroundColor: '#f0ad4e',
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 8,
+        marginLeft: 6,
+    },
+    pendenteText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 11,
     },
 });
