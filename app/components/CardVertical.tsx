@@ -1,39 +1,54 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function CardVertical({ produto, quantidade, isEntregue, onPress, quantidadeEntregue }) {
+export default function CardVertical({ produto, quantidade, isEntregue, onPress, quantidadeEntregue = 0 }) {
+    const total = Number(quantidade) || 0;
+    const entregue = Number(quantidadeEntregue) || 0;
+    const restante = total - entregue;
+
+    const foiEntregueTudo = restante <= 0;
+    const temEntregaParcial = entregue > 0 && restante > 0;
+
     return (
         <TouchableOpacity
             onPress={onPress}
-            disabled={isEntregue}
-            activeOpacity={isEntregue ? 1 : 0.7}
+            disabled={foiEntregueTudo}
+            activeOpacity={foiEntregueTudo ? 1 : 0.7}
         >
-            <View style={[styles.card, isEntregue && styles.cardEntregue]}>
-                <Text style={[styles.title, isEntregue && styles.titleEntregue]}>
+            <View style={[styles.card, foiEntregueTudo && styles.cardEntregue]}>
+                <Text style={[styles.title, foiEntregueTudo && styles.titleEntregue]}>
                     {produto || 'Produto'}
                 </Text>
 
                 <View style={styles.infoRow}>
                     <Text style={styles.label}>Quantidade total:</Text>
                     <View style={styles.valueContainer}>
-                        <Text style={styles.value}>{`${quantidade}`}</Text>
+                        <Text style={styles.value}>{`${quantidade} kg`}</Text>
                     </View>
                 </View>
 
-                <View style={styles.infoRow}>
-                    <Text style={styles.label}>Quantidade entregue:</Text>
-                    <View style={styles.valueContainer}>
-                        <Text style={styles.value}>{`${quantidade}`}</Text>
+                {quantidadeEntregue != null && (
+                    <View style={styles.infoRow}>
+                        <Text style={styles.label}>Quantidade entregue:</Text>
+                        <View style={styles.valueContainer}>
+                            <Text style={styles.value}>{`${quantidadeEntregue} kg`}</Text>
+                        </View>
                     </View>
-                </View>
+                )}
+
                 <View style={styles.infoRow}>
                     <Text style={styles.label}>Restante:</Text>
-                    <View style={styles.valueContainer}>
-                        <Text style={styles.value}>  {Number(quantidade) - Number(quantidadeEntregue)}</Text>
+                    <View style={styles.valueContainerRow}>
+                        {temEntregaParcial && (
+                            <View style={styles.pendenteBadge}>
+                                <Text style={styles.pendenteText}>PENDENTE</Text>
+                            </View>
+                        )}
+                        <Text style={styles.value}>{`${restante} kg`}</Text>
                     </View>
                 </View>
 
-                {isEntregue && (
+                {foiEntregueTudo && (
                     <View style={styles.entregueBadge}>
                         <Text style={styles.entregueText}>ENTREGUE</Text>
                     </View>
@@ -83,6 +98,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
+    valueContainerRow: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 8,
+    },
     value: {
         fontSize: 15,
         fontWeight: '500',
@@ -102,5 +124,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 12,
         letterSpacing: 1,
+    },
+    pendenteBadge: {
+        backgroundColor: '#f0ad4e',
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 8,
+        marginLeft: 6,
+    },
+    pendenteText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 11,
     },
 });
