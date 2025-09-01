@@ -17,7 +17,8 @@ import { useUser } from "../contexts/UserContext";
 import { getDataHoraAtual } from "../utils/getDataHora";
 
 export default function ConfirmarEntrega() {
-  const { produtoId, produto, quantidade: quantidadeParam, cnpj } = useLocalSearchParams();
+const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } = useLocalSearchParams();
+
 
   const [dataEntrega, setDataEntrega] = useState("");
   const [horaEntrega, setHoraEntrega] = useState("");
@@ -38,7 +39,7 @@ export default function ConfirmarEntrega() {
     if (produto) {
       try {
         const parsedProduto = JSON.parse(produto);
-        console.log("Produto recebido:", parsedProduto); // <-- adicione este console.log
+        console.log("Produto recebido:", parsedProduto); 
         setProdutoInfo(parsedProduto);
       } catch (error) {
         console.warn("Erro ao fazer parse do produto:", error);
@@ -71,7 +72,7 @@ export default function ConfirmarEntrega() {
     }
 
     try {
-      const produtoDocRef = doc(db, "consumidores", userData.cnpj, "CE2025020248", "tpafRef");
+     const produtoDocRef = doc(db, "consumidores", userData.cnpj, codigoProjeto, "tpafRef");
       const snap = await getDoc(produtoDocRef);
       if (!snap.exists()) throw new Error("Documento não encontrado");
 

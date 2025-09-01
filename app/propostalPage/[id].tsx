@@ -39,6 +39,8 @@ export default function ItemProposta() {
                 setLoading(true);
                 try {
                     const data = await getProdutosDoados(id, cnpj);
+
+                    console.log("📄 numTpaf da proposta carregada:", data?.numTpaf); 
                     setProposta(data);
                 } finally {
                     setLoading(false);
@@ -125,13 +127,16 @@ export default function ItemProposta() {
                                     pathname: `/confirmar-entrega/${item.produtoId}`,
                                     params: {
                                         produto: JSON.stringify({
-                                            nome: item.produto, // produto agora é um objeto com o nome
-                                            // adicione outras informações que precisar
+                                            nome: item.produto,
+                                            
                                         }),
                                         quantidade: item.quantidade.toString(),
                                         produtoId: item.produtoId,
+                                        codigoProjeto: proposta.numTpaf.replace(/\//g, ''), 
+                                        cnpj: proposta.cnpjProponente, 
                                     },
                                 });
+                
                             }}
                         />
                     );

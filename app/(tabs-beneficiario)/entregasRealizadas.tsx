@@ -17,10 +17,9 @@ export default function MinhasCandidaturasScreen() {
       const fetchEntregas = async () => {
         setLoading(true);
         try {
-          // Referência para a coleção
+      
           const entregasRef = collection(db, 'entregasRealizadas');
 
-          // Query filtrando apenas pelo CNPJ do usuário
           const q = query(entregasRef, where("cnpj", "==", userData.cnpj));
           const snapshot = await getDocs(q);
 
