@@ -30,7 +30,7 @@ export default function MinhasCandidaturasScreen() {
               id: doc.id,
               data: data.dataEntrega || 'Data não informada',
               hora: data.horaEntrega || 'Hora não informada',
-              titulo: `${data.produto || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
+              titulo: `${data.produto?.nome || 'Produto desconhecido'} (${data.quantidade || 0}x)`,
               status: 'CONFIRMADA',
               corStatus: '#4CAF50',
             };

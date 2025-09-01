@@ -18,7 +18,6 @@ export default function DeliveryDetalhe() {
       setLoading(true);
       try {
         const docRef = doc(db, 'entregasRealizadas', id as string);
-
         const snapshot = await getDoc(docRef);
 
         if (snapshot.exists()) {
@@ -43,8 +42,7 @@ export default function DeliveryDetalhe() {
     fetchEntrega();
   }, [id, userData]);
 
-
-  if (loading) {
+  if (loading || loadingUser) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#000" />
@@ -67,10 +65,12 @@ export default function DeliveryDetalhe() {
       <Text style={styles.info}>Hora: {hora}</Text>
       <Text style={styles.info}>Status: {status}</Text>
 
-
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Detalhes da entrega:</Text>
-        <Text style={styles.cardContent}>Produto: {entrega.produto}</Text>
+        <Text style={styles.cardContent}>Produto: {entrega.produto?.nome || 'Sem nome'}</Text>
+        {entrega.produto?.descricao && (
+          <Text style={styles.cardContent}>Descrição: {entrega.produto.descricao}</Text>
+        )}
         <Text style={styles.cardContent}>Quantidade: {entrega.quantidade ?? 0}</Text>
         <Text style={styles.cardContent}>Data Entrega: {entrega.dataEntrega || 'Não informada'}</Text>
         <Text style={styles.cardContent}>Hora Entrega: {entrega.horaEntrega || 'Não informada'}</Text>
@@ -116,5 +116,6 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     fontSize: 12,
     color: '#333',
+    marginBottom: 4,
   },
 });
