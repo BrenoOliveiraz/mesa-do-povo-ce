@@ -25,7 +25,7 @@ export default function ActionButton({ onPress, title, icons, outline }: ActionB
 
 const styles = StyleSheet.create({
   button: {
-    width: "50%" ,
+    width: "100%" ,
     backgroundColor: '#FFB703',
     paddingVertical: 12,
     borderRadius: 12,

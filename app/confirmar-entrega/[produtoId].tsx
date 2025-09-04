@@ -17,7 +17,7 @@ import { useUser } from "../contexts/UserContext";
 import { getDataHoraAtual } from "../utils/getDataHora";
 
 export default function ConfirmarEntrega() {
-const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } = useLocalSearchParams();
+  const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } = useLocalSearchParams();
 
 
   const [dataEntrega, setDataEntrega] = useState("");
@@ -39,7 +39,7 @@ const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } =
     if (produto) {
       try {
         const parsedProduto = JSON.parse(produto);
-        console.log("Produto recebido:", parsedProduto); 
+        console.log("Produto recebido:", parsedProduto);
         setProdutoInfo(parsedProduto);
       } catch (error) {
         console.warn("Erro ao fazer parse do produto:", error);
@@ -61,6 +61,12 @@ const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } =
   };
 
   const salvarEntrega = async () => {
+    if (Number(quantidade) <= 0) {
+      
+      Alert.alert("Quantidade inválida", "A quantidade entregue deve ser maior que zero.");
+      return;
+    }
+
     if (!produtoId) {
       Alert.alert("Erro", "Produto não identificado.");
       return;
@@ -72,7 +78,7 @@ const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } =
     }
 
     try {
-     const produtoDocRef = doc(db, "consumidores", userData.cnpj, codigoProjeto, "tpafRef");
+      const produtoDocRef = doc(db, "consumidores", userData.cnpj, codigoProjeto, "tpafRef");
       const snap = await getDoc(produtoDocRef);
       if (!snap.exists()) throw new Error("Documento não encontrado");
 
@@ -133,6 +139,7 @@ const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } =
     }
   };
 
+
   if (loadingUser) {
     return (
       <View style={[styles.container, { justifyContent: "center", alignItems: "center" }]}>
@@ -146,9 +153,9 @@ const { produtoId, produto, quantidade: quantidadeParam, cnpj, codigoProjeto } =
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>📦 Confirmação de Entrega</Text>
 
-   
+
       <View style={styles.card}>
-  
+
         {produtoInfo?.nome && <Text style={styles.cardText}>Produto: {produtoInfo.nome}</Text>}
         {produtoInfo?.descricao && (
           <Text style={styles.cardText}>Descrição: {produtoInfo.descricao}</Text>
