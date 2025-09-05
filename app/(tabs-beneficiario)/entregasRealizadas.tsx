@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'; // 👈 ADICIONADO
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useUser } from '../contexts/UserContext';
@@ -17,9 +18,7 @@ export default function MinhasCandidaturasScreen() {
       const fetchEntregas = async () => {
         setLoading(true);
         try {
-      
           const entregasRef = collection(db, 'entregasRealizadas');
-
           const q = query(entregasRef, where("cnpj", "==", userData.cnpj));
           const snapshot = await getDocs(q);
 
@@ -49,22 +48,15 @@ export default function MinhasCandidaturasScreen() {
     }, [userData?.cnpj])
   );
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Entregas realizadas</Text>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
   const confirmadas = entregas.filter(item => item.status === 'CONFIRMADA');
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Entregas realizadas</Text>
 
-      {confirmadas.length === 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : confirmadas.length === 0 ? (
         <Text style={styles.emptyText}>Nenhuma entrega confirmada até o momento.</Text>
       ) : (
         <FlatList
@@ -82,9 +74,10 @@ export default function MinhasCandidaturasScreen() {
           )}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

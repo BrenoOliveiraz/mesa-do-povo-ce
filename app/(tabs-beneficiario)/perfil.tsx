@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'; // 👈 ADICIONADO
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
 import { auth } from '../firebaseConfig';
@@ -37,22 +38,22 @@ export default function PerfilScreen() {
 
   if (loadingUser || isLoggingOut) {
     return (
-      <View style={[styles.container, styles.centered]}>
+      <SafeAreaView style={[styles.container, styles.centered]}>
         <ActivityIndicator size="large" color="#023047" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (!userData) {
     return (
-      <View style={[styles.container, styles.centered]}>
+      <SafeAreaView style={[styles.container, styles.centered]}>
         <Text style={styles.noUserText}>Nenhum usuário logado.</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           <MaterialCommunityIcons name="account-circle" size={110} color="#023047" />
@@ -82,9 +83,10 @@ export default function PerfilScreen() {
           <Text style={[styles.optionText, { color: '#D00000' }]}>Sair</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

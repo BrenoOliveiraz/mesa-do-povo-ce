@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { FlatList, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'; 
 
 import ProposalCard from '../components/ProposalCard';
 import Header from '../components/Header';
@@ -13,7 +14,6 @@ export default function MinhasCandidaturas() {
   const [error, setError] = useState(null);
 
   const { userData, loadingUser } = useUser();
-
 
   useEffect(() => {
     if (!userData?.cnpj) return;
@@ -33,18 +33,16 @@ export default function MinhasCandidaturas() {
     fetchPropostas();
   }, [userData]);
 
-
   if (loadingUser || loading) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
-      </View>
+      </SafeAreaView>
     );
   }
 
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header userName={userData?.nome || "Usuário"} />
       <FlatList
         data={propostas}
@@ -54,24 +52,20 @@ export default function MinhasCandidaturas() {
             title={item.titulo || item.nomeProponente || 'Sem título'}
             subTitle={item.status || item.cnpjProponente || 'Sem status'}
             onPress={() => {
-
               router.push({
                 pathname: `/propostalPage/${item.id}`,
-                params: {
-
-                  cnpj: userData.cnpj,
-                },
+                params: { cnpj: userData.cnpj },
               });
-
             }}
           />
         )}
         ListEmptyComponent={<Text style={styles.empty}>Você não está participando de nenhuma proposta.</Text>}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
