@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context'; 
+import { View, FlatList, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ProposalCard from '../components/ProposalCard';
 import Header from '../components/Header';
@@ -60,8 +60,9 @@ export default function MinhasCandidaturas() {
           />
         )}
         ListEmptyComponent={<Text style={styles.empty}>Você não está participando de nenhuma proposta.</Text>}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        ListFooterComponent={<View style={{ height: 20 }} />}  // Espaço extra no final da lista
       />
+
     </SafeAreaView>
   );
 }

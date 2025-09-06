@@ -28,7 +28,7 @@ export default function LoginScreen() {
 
     try {
       await signInWithEmailAndPassword(auth, email, senha);
-      router.replace('/(tabs-beneficiario)/candidaturas'); 
+      router.replace('/(tabs-beneficiario)/candidaturas');
     } catch (error: any) {
       console.error('Erro no login:', error);
       Alert.alert('Erro ao entrar', error.message || 'Tente novamente.');
